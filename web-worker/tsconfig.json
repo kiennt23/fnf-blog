@@ -1,0 +1,31 @@
+{
+  // Optionally extend from your main tsconfig to share certain settings:
+  "extends": "../tsconfig.json",
+
+  "compilerOptions": {
+    // The key difference: we want the WebWorker libs for Service Worker APIs
+    "lib": [
+      "ESNext",
+      "WebWorker"
+    ],
+
+    // If needed, override certain settings from your main tsconfig.
+    // e.g. you might exclude Node types or DOM in the worker context.
+
+    // If you prefer a different outDir for your service worker build:
+    // "outDir": "./dist-sw",
+
+    // Etc. (strict, esModuleInterop, etc.)
+    // Some may come from the extended tsconfig if you used "extends".
+  },
+
+  "include": [
+    "../web-worker/**/*",
+    "../types/global.d.ts"
+  ],
+
+  // Exclude anything not related to your SW if you like:
+  "exclude": [
+    "node_modules"
+  ]
+}
