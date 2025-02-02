@@ -2,4 +2,6 @@
 .env
 
 dist
+public
 node_modules
+.vercel

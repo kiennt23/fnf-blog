@@ -6,7 +6,7 @@
     "build:client": "webpack --config webpack.fe.config.js",
     "build:server": "webpack --config webpack.be.config.js",
     "build": "npm run build:client && npm run build:server",
-    "start": "node dist/backend.bundle.js",
+    "start": "node dist/index.js",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix"
   },

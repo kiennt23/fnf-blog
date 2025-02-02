@@ -25,8 +25,6 @@ const config = {
 app.use(auth(config));
 
 // Serve static files from /dist (where Webpack bundles client code)
-app.use(express.static(path.resolve(__dirname, "../dist")));
-
 app.use(express.static(path.resolve(__dirname, "../public")));
 
 app.get("*", (req: Request, res: Response) => {
