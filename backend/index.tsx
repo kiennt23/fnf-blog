@@ -40,13 +40,21 @@ app.get("*", (req: Request, res: Response) => {
 
   const userDataJson = JSON.stringify({ isAuthenticated, user });
 
+  let scripts = "";
+  if (process.env.NODE_ENV !== "production") {
+    scripts += "\n";
+    scripts +=
+      '<script src="https://unpkg.com/react-scan/dist/auto.global.js"></script>';
+    scripts += "\n";
+  }
+
   const html = `
       <!DOCTYPE html>
       <html lang="en">
         <head>
           <meta charset="utf-8" />
           <title>Maneki Dashboard</title>
-          ${process.env.NODE_ENV !== "production" && `<script src="https://unpkg.com/react-scan/dist/auto.global.js"></script>`}
+          ${scripts}
         </head>
         <body>
           <div id="root">${appHtml}</div>
