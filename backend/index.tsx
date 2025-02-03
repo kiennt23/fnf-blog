@@ -14,7 +14,7 @@ const PORT = process.env.PORT || 3000;
 
 const config = {
   authRequired: false, // If true, all routes require authentication by default
-  auth0Logout: true, // Let users log out via Auth0
+  auth0Logout: false, // Let users log out via Auth0
   secret: process.env.AUTH0_SECRET,
   baseURL: process.env.AUTH0_BASE_URL,
   clientID: process.env.AUTH0_CLIENT_ID,
