@@ -53,7 +53,7 @@ app.get("*", (req: Request, res: Response) => {
       <html lang="en">
         <head>
           <meta charset="utf-8" />
-          <title>Maneki Dashboard</title>
+          <title>Frames and Functions</title>
           ${scripts}
         </head>
         <body>
