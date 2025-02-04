@@ -1,6 +1,7 @@
 const path = require('path');
 const { DefinePlugin } = require('webpack');
 const { defineReactCompilerLoaderOption, reactCompilerLoader } = require('react-compiler-webpack');
+const { default: ReactComponentName } = require('react-scan/react-component-name/webpack');
 
 const semver = require('semver');
 const { execSync } = require('child_process');
@@ -65,9 +66,20 @@ function getVersionFromGit() {
 }
 
 const versionString = getVersionFromGit();
+const isProduction = process.env.NODE_ENV === 'production';
+const plugins = [
+    new DefinePlugin({
+        SERVICE_WORKER_VERSION: JSON.stringify(versionString),
+    }),
+];
+
+if (isProduction) {
+    plugins.push(ReactComponentName({}));
+}
 
 module.exports = {
-    mode: 'development', // or "production" in a real app
+    mode: isProduction ? 'production' : 'development',
+    devtool: isProduction ? false : 'inline-source-map',
     entry: {
         'client.bundle': './frontend/client.tsx',
         'service-worker': './web-worker/service-worker.ts',
@@ -97,9 +109,5 @@ module.exports = {
     resolve: {
         extensions: ['.ts', '.tsx', '.js', '.jsx']
     },
-    plugins: [
-        new DefinePlugin({
-            SERVICE_WORKER_VERSION: JSON.stringify(versionString),
-        }),
-    ]
+    plugins
 };
