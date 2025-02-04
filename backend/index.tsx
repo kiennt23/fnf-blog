@@ -49,7 +49,7 @@ app.get("*", (req: Request, res: Response) => {
   } else {
     scripts += "\n";
     scripts +=
-      '<script src="https://unpkg.com/react-scan/dist/install-hook.global.js"/>';
+      '<script src="https://unpkg.com/react-scan/dist/install-hook.global.js"></script>';
     scripts += "\n";
   }
 
