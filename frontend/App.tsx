@@ -1,6 +1,6 @@
+import { Monitoring } from "react-scan/monitoring";
 import React, { FC } from "react";
 import { Routes, Route, useParams, useLocation } from "react-router-dom";
-import { Monitoring } from "react-scan/monitoring";
 import Home from "./pages/Home";
 import About from "./pages/About";
 import { NewSidebar } from "./ui/components";
