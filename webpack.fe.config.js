@@ -1,7 +1,6 @@
 const path = require('path');
 const { DefinePlugin } = require('webpack');
 const { defineReactCompilerLoaderOption, reactCompilerLoader } = require('react-compiler-webpack');
-const { default: ReactComponentName } = require('react-scan/react-component-name/webpack');
 
 const semver = require('semver');
 const { execSync } = require('child_process');
@@ -72,10 +71,6 @@ const plugins = [
         SERVICE_WORKER_VERSION: JSON.stringify(versionString),
     }),
 ];
-
-if (isProduction) {
-    plugins.push(ReactComponentName({}));
-}
 
 module.exports = {
     mode: isProduction ? 'production' : 'development',

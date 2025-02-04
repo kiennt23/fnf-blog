@@ -46,11 +46,6 @@ app.get("*", (req: Request, res: Response) => {
     scripts +=
       '<script src="https://unpkg.com/react-scan/dist/auto.global.js"></script>';
     scripts += "\n";
-  } else {
-    scripts += "\n";
-    scripts +=
-      '<script src="https://unpkg.com/react-scan/dist/install-hook.global.js"></script>';
-    scripts += "\n";
   }
 
   const html = `
