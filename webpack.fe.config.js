@@ -1,6 +1,9 @@
 const path = require('path');
 const { DefinePlugin } = require('webpack');
 const { defineReactCompilerLoaderOption, reactCompilerLoader } = require('react-compiler-webpack');
+const TerserPlugin = require("terser-webpack-plugin");
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
 
 const semver = require('semver');
 const { execSync } = require('child_process');
@@ -72,6 +75,15 @@ const plugins = [
     }),
 ];
 
+if (isProduction) {
+    plugins.push(new MiniCssExtractPlugin());
+}
+
+const optimization = isProduction ? {
+    minimize: true,
+    minimizer: [new TerserPlugin(), new CssMinimizerPlugin()],
+} : {}
+
 module.exports = {
     mode: isProduction ? 'production' : 'development',
     devtool: isProduction ? false : 'inline-source-map',
@@ -97,12 +109,13 @@ module.exports = {
             },
             {
                 test: /\.css$/, // optional if using CSS
-                use: ['style-loader', 'css-loader']
+                use: [MiniCssExtractPlugin.loader, 'style-loader', 'css-loader']
             }
         ]
     },
     resolve: {
         extensions: ['.ts', '.tsx', '.js', '.jsx']
     },
-    plugins
+    plugins,
+    optimization
 };
