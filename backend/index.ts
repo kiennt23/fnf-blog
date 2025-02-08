@@ -1,17 +1,15 @@
-import React from "react";
 import path from "path";
 import { fileURLToPath } from "url";
-import express, { Request, Response } from "express";
+import express from "express";
 
-import { renderToString } from "react-dom/server";
 import { auth } from "express-openid-connect";
-import { StaticRouter } from "react-router-dom";
 
 import webpack from "webpack";
 import webpackDevMiddleware from "webpack-dev-middleware";
 import webpackHotMiddleware from "webpack-hot-middleware";
 
-import App from "../frontend/App";
+import reactServerMiddleware from "./server";
+import { makeSwappableMiddleware } from "./devUtil";
 
 import dotenv from "dotenv";
 dotenv.config();
@@ -49,45 +47,14 @@ const config = {
 
 app.use(auth(config));
 
-app.get("*", (req: Request, res: Response) => {
-  const isAuthenticated = req.oidc.isAuthenticated();
-  const user = req.oidc.user;
+const [swap, swappableReactServerMiddleware] = makeSwappableMiddleware(
+  reactServerMiddleware,
+);
 
-  const jsx = (
-    <StaticRouter location={req.url}>
-      <App isAuthenticated={isAuthenticated} user={user} />
-    </StaticRouter>
-  );
-  const appHtml = renderToString(jsx);
+app.get("*", swappableReactServerMiddleware);
 
-  const userDataJson = JSON.stringify({ isAuthenticated, user });
-
-  let scripts = "";
-  if (process.env.NODE_ENV !== "production") {
-    scripts += "\n";
-    scripts +=
-      '<script src="https://unpkg.com/react-scan/dist/auto.global.js"></script>';
-    scripts += "\n";
-  }
-
-  const html = `
-      <!DOCTYPE html>
-      <html lang="en">
-        <head>
-          <meta charset="utf-8" />
-          <title>Frames and Functions</title>
-          ${scripts}
-        </head>
-        <body>
-          <div id="root">${appHtml}</div>
-          <script>window.__INITIAL_DATA__ = ${userDataJson}</script>
-          <script src="/client.bundle.js"></script>
-        </body>
-      </html>
-     `;
-
-  // 3) Send the rendered page back to the client
-  res.send(html);
+import.meta.hot?.accept("./server", () => {
+  return swap(reactServerMiddleware);
 });
 
 app.listen(PORT, () => {

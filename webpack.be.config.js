@@ -8,7 +8,7 @@ const __dirname = path.dirname(__filename);
 
 export default {
     mode: 'development', // or "production"
-    entry: './backend/index.tsx',
+    entry: './backend/index.ts',
     target: 'node',          // Important for backend code
     externals: [nodeExternals()],  // So we don't bundle node_modules
     output: {
