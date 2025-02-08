@@ -1,5 +1,6 @@
 import React from "react";
 import path from "path";
+import { fileURLToPath } from "url";
 import express, { Request, Response } from "express";
 
 import { renderToString } from "react-dom/server";
@@ -19,13 +20,17 @@ const app = express();
 
 const isProd = process.env.NODE_ENV === "production";
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 if (isProd) {
   // Serve static files from /public (where Webpack bundles client code)
   app.use(express.static(path.resolve(__dirname, "../public")));
 } else {
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
-  const webpackConfig = require(path.resolve("./webpack.fe.config.js"));
-  const compiler = webpack(webpackConfig);
+  const webpackConfig = await import(
+    path.resolve(__dirname, "../webpack.fe.config.js")
+  );
+  const compiler = webpack(webpackConfig.default);
   app.use(webpackDevMiddleware(compiler));
   app.use(webpackHotMiddleware(compiler));
 }

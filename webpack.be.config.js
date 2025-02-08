@@ -1,8 +1,12 @@
-const path = require('path');
-const webpack = require('webpack');
-const nodeExternals = require('webpack-node-externals');
+import path from 'path';
+import webpack from "webpack";
+import nodeExternals from 'webpack-node-externals';
+import { fileURLToPath } from "url";
 
-module.exports = {
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+export default {
     mode: 'development', // or "production"
     entry: './backend/index.tsx',
     target: 'node',          // Important for backend code

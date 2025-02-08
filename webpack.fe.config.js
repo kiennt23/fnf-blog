@@ -1,13 +1,14 @@
-const path = require('path');
-const { DefinePlugin, HotModuleReplacementPlugin } = require('webpack');
-const { defineReactCompilerLoaderOption, reactCompilerLoader } = require('react-compiler-webpack');
-const TerserPlugin = require("terser-webpack-plugin");
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
-const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
+import path from 'path';
+import { fileURLToPath } from "url";
+import webpack from 'webpack';
+import { defineReactCompilerLoaderOption, reactCompilerLoader } from 'react-compiler-webpack';
+import TerserPlugin from "terser-webpack-plugin";
+import MiniCssExtractPlugin from "mini-css-extract-plugin";
+import CssMinimizerPlugin from "css-minimizer-webpack-plugin";
+import ReactRefreshWebpackPlugin from '@pmmmwh/react-refresh-webpack-plugin';
 
-const semver = require('semver');
-const { execSync } = require('child_process');
+import semver from 'semver';
+import { execSync } from 'child_process';
 
 /** Generate a fallback version like "0.1.0-rcabc" using the current time in base 36 */
 function getFallbackVersion() {
@@ -70,7 +71,7 @@ function getVersionFromGit() {
 const versionString = getVersionFromGit();
 const isProduction = process.env.NODE_ENV === 'production';
 const plugins = [
-    new DefinePlugin({
+    new webpack.DefinePlugin({
         SERVICE_WORKER_VERSION: JSON.stringify(versionString),
     }),
 ];
@@ -78,6 +79,9 @@ const plugins = [
 const entry = {
     'client.bundle': ['./frontend/client.tsx'],
 }
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const baseConf = {
     output: {
@@ -150,6 +154,7 @@ if (isProduction) {
             devMiddleware: {
                 serverSideRender: true,
                 publicPath: path.resolve(__dirname, 'public'),
+                writeToDisk: true,
             },
             client: {
                 overlay: false,
@@ -161,7 +166,7 @@ if (isProduction) {
         },
         plugins: [
             ...plugins,
-            new HotModuleReplacementPlugin(),
+            new webpack.HotModuleReplacementPlugin(),
             new ReactRefreshWebpackPlugin({
                 overlay: {
                     sockIntegration: 'whm',
@@ -171,4 +176,4 @@ if (isProduction) {
     }
 }
 
-module.exports = finalConfig;
+export default finalConfig;
