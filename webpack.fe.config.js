@@ -142,6 +142,22 @@ if (isProduction) {
         devtool: 'inline-source-map',
         devServer: {
             hot: true,
+            compress: true,
+            port: 8080,
+            static: {
+                directory: path.resolve(__dirname, 'public'),
+            },
+            devMiddleware: {
+                serverSideRender: true,
+                publicPath: path.resolve(__dirname, 'public'),
+            },
+            client: {
+                overlay: false,
+                progress: true,
+                reconnect: 3,
+                webSocketTransport: 'ws'
+            },
+            webSocketServer: 'ws'
         },
         plugins: [
             ...plugins,

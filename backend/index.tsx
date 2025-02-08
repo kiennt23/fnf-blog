@@ -17,18 +17,18 @@ dotenv.config();
 
 const app = express();
 
-// eslint-disable-next-line @typescript-eslint/no-require-imports
-const webpackConfig = require(path.resolve("./webpack.fe.config.js"));
-console.log(webpackConfig);
-const compiler = webpack(webpackConfig);
-app.use(
-  webpackDevMiddleware(compiler, {
-    publicPath: webpackConfig.output.publicPath,
-    serverSideRender: true,
-  }),
-);
+const isProd = process.env.NODE_ENV === "production";
 
-app.use(webpackHotMiddleware(compiler));
+if (isProd) {
+  // Serve static files from /public (where Webpack bundles client code)
+  app.use(express.static(path.resolve(__dirname, "../public")));
+} else {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const webpackConfig = require(path.resolve("./webpack.fe.config.js"));
+  const compiler = webpack(webpackConfig);
+  app.use(webpackDevMiddleware(compiler));
+  app.use(webpackHotMiddleware(compiler));
+}
 
 const PORT = process.env.PORT || 3000;
 
@@ -43,9 +43,6 @@ const config = {
 };
 
 app.use(auth(config));
-
-// Serve static files from /dist (where Webpack bundles client code)
-app.use(express.static(path.resolve(__dirname, "../public")));
 
 app.get("*", (req: Request, res: Response) => {
   const isAuthenticated = req.oidc.isAuthenticated();

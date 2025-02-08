@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "dev:server": "tsx backend/index.tsx",
+    "dev:server": "tsx watch backend/index.tsx",
     "dev": "concurrently \"npm run build:client\" \"npm run dev:server\"",
     "build:client": "webpack --config webpack.fe.config.js",
     "build:server": "webpack --config webpack.be.config.js",
@@ -44,6 +44,7 @@
     "@typescript-eslint/eslint-plugin": "^8.22.0",
     "@typescript-eslint/parser": "^8.22.0",
     "babel-loader": "^9.2.1",
+    "chokidar-cli": "^3.0.0",
     "concurrently": "^9.1.2",
     "css-loader": "^7.1.2",
     "css-minimizer-webpack-plugin": "^7.0.0",
