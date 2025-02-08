@@ -3,6 +3,8 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
+    "dev:server": "tsx backend/index.tsx",
+    "dev": "concurrently \"npm run build:client\" \"npm run dev:server\"",
     "build:client": "webpack --config webpack.fe.config.js",
     "build:server": "webpack --config webpack.be.config.js",
     "build": "npm run build:client && npm run build:server",
@@ -21,7 +23,9 @@
     "express-openid-connect": "^2.17.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "react-router-dom": "^7.1.3"
+    "react-router-dom": "^7.1.3",
+    "webpack-dev-middleware": "^7.4.2",
+    "webpack-hot-middleware": "^2.26.1"
   },
   "devDependencies": {
     "@babel/cli": "^7.26.4",
@@ -31,13 +35,16 @@
     "@babel/preset-react": "^7.26.3",
     "@babel/preset-typescript": "^7.26.0",
     "@flydotio/dockerfile": "^0.7.4",
+    "@pmmmwh/react-refresh-webpack-plugin": "^0.5.15",
     "@types/express": "^5.0.0",
     "@types/node": "^22.10.10",
     "@types/react": "^19.0.8",
     "@types/react-dom": "^19.0.3",
+    "@types/webpack-hot-middleware": "^2.25.9",
     "@typescript-eslint/eslint-plugin": "^8.22.0",
     "@typescript-eslint/parser": "^8.22.0",
     "babel-loader": "^9.2.1",
+    "concurrently": "^9.1.2",
     "css-loader": "^7.1.2",
     "css-minimizer-webpack-plugin": "^7.0.0",
     "eslint": "^9.19.0",
@@ -51,9 +58,11 @@
     "semver": "^7.6.3",
     "style-loader": "^4.0.0",
     "terser-webpack-plugin": "^5.3.11",
+    "tsx": "^4.19.2",
     "typescript": "^5.7.3",
     "webpack": "^5.97.1",
     "webpack-cli": "^6.0.1",
+    "webpack-dev-server": "^5.2.0",
     "webpack-node-externals": "^3.0.0"
   }
 }

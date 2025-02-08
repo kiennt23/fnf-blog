@@ -14,7 +14,7 @@ hydrateRoot(
 );
 
 // Only run SW code if available
-if ("serviceWorker" in navigator) {
+if (process.env.NODE_ENV === "production" && "serviceWorker" in navigator) {
   window.addEventListener("load", async () => {
     try {
       const registration =

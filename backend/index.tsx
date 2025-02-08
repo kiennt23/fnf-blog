@@ -1,15 +1,35 @@
+import React from "react";
 import path from "path";
 import express, { Request, Response } from "express";
-import React from "react";
+
 import { renderToString } from "react-dom/server";
 import { auth } from "express-openid-connect";
 import { StaticRouter } from "react-router-dom";
+
+import webpack from "webpack";
+import webpackDevMiddleware from "webpack-dev-middleware";
+import webpackHotMiddleware from "webpack-hot-middleware";
+
 import App from "../frontend/App";
 
 import dotenv from "dotenv";
 dotenv.config();
 
 const app = express();
+
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const webpackConfig = require(path.resolve("./webpack.fe.config.js"));
+console.log(webpackConfig);
+const compiler = webpack(webpackConfig);
+app.use(
+  webpackDevMiddleware(compiler, {
+    publicPath: webpackConfig.output.publicPath,
+    serverSideRender: true,
+  }),
+);
+
+app.use(webpackHotMiddleware(compiler));
+
 const PORT = process.env.PORT || 3000;
 
 const config = {

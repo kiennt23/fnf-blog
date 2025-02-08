@@ -1,13 +1,13 @@
 const path = require('path');
-const { DefinePlugin } = require('webpack');
+const { DefinePlugin, HotModuleReplacementPlugin } = require('webpack');
 const { defineReactCompilerLoaderOption, reactCompilerLoader } = require('react-compiler-webpack');
 const TerserPlugin = require("terser-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
+const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
 
 const semver = require('semver');
 const { execSync } = require('child_process');
-
 
 /** Generate a fallback version like "0.1.0-rcabc" using the current time in base 36 */
 function getFallbackVersion() {
@@ -75,22 +75,11 @@ const plugins = [
     }),
 ];
 
-if (isProduction) {
-    plugins.push(new MiniCssExtractPlugin());
+const entry = {
+    'client.bundle': ['./frontend/client.tsx'],
 }
 
-const optimization = isProduction ? {
-    minimize: true,
-    minimizer: [new TerserPlugin(), new CssMinimizerPlugin()],
-} : {}
-
-module.exports = {
-    mode: isProduction ? 'production' : 'development',
-    devtool: isProduction ? false : 'inline-source-map',
-    entry: {
-        'client.bundle': './frontend/client.tsx',
-        'service-worker': './web-worker/service-worker.ts',
-    },
+const baseConf = {
     output: {
         path: path.resolve(__dirname, 'public'),
         filename: '[name].js',
@@ -115,7 +104,55 @@ module.exports = {
     },
     resolve: {
         extensions: ['.ts', '.tsx', '.js', '.jsx']
-    },
-    plugins,
-    optimization
+    }
 };
+
+let finalConfig = {}
+if (isProduction) {
+    const prodEntry = {
+        ...entry,
+        'service-worker': ['./web-worker/service-worker.ts'],
+    }
+
+    finalConfig = {
+        ...baseConf,
+        entry: prodEntry,
+        mode: 'production',
+        devtool: false,
+        optimization: {
+            minimize: true,
+            minimizer: [new TerserPlugin(), new CssMinimizerPlugin()],
+        },
+        plugins: [
+            ...plugins,
+            new MiniCssExtractPlugin()
+        ]
+    }
+} else {
+    const devEntry = {}
+    const entries = Object.keys(entry);
+    entries.forEach(theEntry => {
+        devEntry[theEntry] = ['webpack-hot-middleware/client?path=/__webpack_hmr&timeout=20000', ...entry[theEntry]];
+    })
+
+    finalConfig = {
+        ...baseConf,
+        entry: devEntry,
+        mode: 'development',
+        devtool: 'inline-source-map',
+        devServer: {
+            hot: true,
+        },
+        plugins: [
+            ...plugins,
+            new HotModuleReplacementPlugin(),
+            new ReactRefreshWebpackPlugin({
+                overlay: {
+                    sockIntegration: 'whm',
+                },
+            })
+        ]
+    }
+}
+
+module.exports = finalConfig;
