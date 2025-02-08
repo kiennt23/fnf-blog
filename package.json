@@ -5,11 +5,9 @@
   "type": "module",
   "scripts": {
     "dev:server": "node --import @loaderkit/ts/register --import dynohot backend/index.ts",
-    "dev": "concurrently \"npm run build:client\" \"npm run dev:server\"",
-    "build:client": "webpack --config webpack.fe.config.js",
-    "build:server": "webpack --config webpack.be.config.js",
-    "build": "npm run build:client && npm run build:server",
-    "start": "node dist/index.js",
+    "dev": "concurrently \"npm run build\" \"npm run dev:server\"",
+    "build": "webpack --config webpack.fe.config.js",
+    "start": "bun backend/index.ts",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix"
   },
