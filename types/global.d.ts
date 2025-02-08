@@ -16,4 +16,11 @@ declare global {
   interface WorkerGlobalScope {
     skipWaiting(): void;
   }
+
+  interface ImportMeta {
+    hot?: {
+      accept: (module: string, callback?: () => void) => void;
+      dispose: (callback: (data: never) => void) => void;
+    };
+  }
 }

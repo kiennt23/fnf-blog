@@ -54,7 +54,7 @@ const [swap, swappableReactServerMiddleware] = makeSwappableMiddleware(
 app.get("*", swappableReactServerMiddleware);
 
 import.meta.hot?.accept("./server", () => {
-  return swap(reactServerMiddleware);
+  swap(reactServerMiddleware);
 });
 
 app.listen(PORT, () => {
