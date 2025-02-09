@@ -123,7 +123,9 @@ if (isProduction) {
         ...baseConf,
         output: {
             path: path.resolve(__dirname, 'public'),
-            filename: '[name].[contenthash].js',
+            filename: (pathData) => {
+                return pathData.chunk.name === 'service-worker' ? '[name].js' : '[name].[contenthash].js';
+            },
             publicPath: '/'
         },
         entry: prodEntry,
