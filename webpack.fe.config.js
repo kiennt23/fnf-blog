@@ -134,6 +134,17 @@ if (isProduction) {
         optimization: {
             minimize: true,
             minimizer: [new TerserPlugin(), new CssMinimizerPlugin()],
+            runtimeChunk: 'single',
+            splitChunks: {
+                chunks: 'all',
+                cacheGroups: {
+                    vendor: {
+                        test: /[\\/]node_modules[\\/]/,
+                        name: 'vendors',
+                        chunks: 'all',
+                    },
+                },
+            }
         },
         plugins: [
             ...plugins,
