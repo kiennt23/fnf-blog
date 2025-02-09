@@ -17,6 +17,17 @@ if (fs.existsSync(manifestPath)) {
   manifest = JSON.parse(fs.readFileSync(manifestPath, "utf8"));
 }
 
+const getScripts = () => {
+  if (!fs.existsSync(manifestPath))
+    return `<script src="/client.bundle.js"></script>`;
+
+  const manifest = JSON.parse(fs.readFileSync(manifestPath, "utf8"));
+  return Object.keys(manifest)
+    .filter((name) => !(name === "service-worker.js")) // we treat service worker differently
+    .map((name) => `<script src="${manifest[name]}" defer></script>`)
+    .join("\n");
+};
+
 const reactServerMiddleware = (req: Request, res: Response) => {
   const isAuthenticated = req.oidc.isAuthenticated();
   const user = req.oidc.user;
@@ -50,7 +61,7 @@ const reactServerMiddleware = (req: Request, res: Response) => {
           <div id="root">${appHtml}</div>
           <script>window.__INITIAL_DATA__ = ${userDataJson}</script>
           <script>window.__MANIFEST_DATA__ = ${JSON.stringify(manifest)}</script>
-          <script src="${manifest["client.js"] || "client.bundle.js"}"></script>
+          ${getScripts()}
         </body>
       </html>
      `;

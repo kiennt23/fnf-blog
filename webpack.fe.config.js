@@ -134,6 +134,9 @@ if (isProduction) {
         optimization: {
             minimize: true,
             minimizer: [new TerserPlugin(), new CssMinimizerPlugin()],
+            splitChunks: {
+                chunks: 'all',
+            },
         },
         plugins: [
             ...plugins,
