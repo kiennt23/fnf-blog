@@ -1,17 +1,19 @@
 declare const SERVICE_WORKER_VERSION: string;
 
 const CACHE_NAME = SERVICE_WORKER_VERSION;
-const URLS_TO_CACHE = [
-  "/client.bundle.js",
-  // Add any other static URLs you want cached, e.g. '/logo.png'
-];
 
 // During the install phase, cache static resources
 self.addEventListener("install", (event) => {
   const swEvent = event as ExtendableEvent;
   swEvent.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(URLS_TO_CACHE);
+    caches.open(CACHE_NAME).then(async (cache) => {
+      const manifest = await fetch("/manifest.json", {});
+      const manifestJson = await manifest.json();
+
+      const urlToCache = Object.keys(manifestJson)
+        .filter((name) => name !== "service-worker.js")
+        .map((name) => manifestJson[name]);
+      return cache.addAll(urlToCache);
     }),
   );
 });
