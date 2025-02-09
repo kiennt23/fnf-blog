@@ -21,6 +21,8 @@ const isProd = process.env.NODE_ENV === "production";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+app.use(express.static(path.resolve(__dirname, "../static")));
+
 if (isProd) {
   // Serve static files from /public (where Webpack bundles client code)
   app.use(express.static(path.resolve(__dirname, "../public")));

@@ -55,6 +55,7 @@ const reactServerMiddleware = (req: Request, res: Response) => {
         <head>
           <meta charset="utf-8" />
           <title>Frames and Functions</title>
+          <link rel="icon" type="image/png" href="/favicon.png" />
           ${scripts}
         </head>
         <body>

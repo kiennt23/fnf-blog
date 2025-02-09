@@ -2,7 +2,7 @@ import React, { FC } from "react";
 import { Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import About from "./pages/About";
-import { NewSidebar } from "./ui/components";
+import { Sidebar } from "./ui/components";
 
 type AppProps = {
   isAuthenticated?: boolean;
@@ -12,7 +12,7 @@ type AppProps = {
 const App: FC<AppProps> = ({ isAuthenticated, user }) => {
   return (
     <>
-      <NewSidebar isAuthenticated={isAuthenticated} user={user} />
+      <Sidebar isAuthenticated={isAuthenticated} user={user} />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
