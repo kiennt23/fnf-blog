@@ -32,10 +32,7 @@ COPY . .
 RUN bunx webpack --config webpack.fe.config.js
 
 # Final stage for app image
-FROM base
-
-# Copy built application
-COPY --from=build /app /app
+FROM build
 
 # Start the server by default, this can be overwritten at runtime
 EXPOSE 3000
