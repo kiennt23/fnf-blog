@@ -1,8 +1,7 @@
 # syntax = docker/dockerfile:1
 
 # Adjust NODE_VERSION as desired
-ARG NODE_VERSION=23.6.1
-FROM node:${NODE_VERSION}-slim AS base
+FROM oven/bun:slim AS base
 
 LABEL fly_launch_runtime="Node.js"
 
@@ -16,24 +15,15 @@ ENV NODE_ENV="production"
 # Throw-away build stage to reduce size of final image
 FROM base AS build
 
-# Install packages needed to build node modules
-RUN apt-get update -qq && \
-    apt-get install --no-install-recommends -y build-essential node-gyp pkg-config python-is-python3
-
-RUN curl -fsSL https://bun.sh/install | bash
-
 # Install node modules
 COPY package-lock.json package.json ./
-RUN npm ci --include=dev
+RUN bun install --frozen-lockfile
 
 # Copy application code
 COPY . .
 
 # Build application
-RUN npm run build
-
-# Remove development dependencies
-RUN npm prune --omit=dev
+RUN bunx webpack --config webpack.fe.config.js
 
 
 # Final stage for app image
@@ -44,4 +34,4 @@ COPY --from=build /app /app
 
 # Start the server by default, this can be overwritten at runtime
 EXPOSE 3000
-CMD [ "npm", "run", "start" ]
+CMD [ "bun", "backend/index.ts" ]
