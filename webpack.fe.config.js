@@ -9,6 +9,7 @@ import ReactRefreshWebpackPlugin from '@pmmmwh/react-refresh-webpack-plugin';
 
 import semver from 'semver';
 import { execSync } from 'child_process';
+import {WebpackManifestPlugin} from "webpack-manifest-plugin";
 
 /** Generate a fallback version like "0.1.0-rcabc" using the current time in base 36 */
 function getFallbackVersion(prefix = '0.1.0-rc') {
@@ -77,7 +78,7 @@ const plugins = [
 ];
 
 const entry = {
-    'client.bundle': ['./frontend/client.tsx'],
+    'client': ['./frontend/client.tsx'],
 }
 
 const __filename = fileURLToPath(import.meta.url);
@@ -86,7 +87,7 @@ const __dirname = path.dirname(__filename);
 const baseConf = {
     output: {
         path: path.resolve(__dirname, 'public'),
-        filename: '[name].js',
+        filename: '[name].[contenthash].js',
         publicPath: '/'
     },
     module: {
@@ -120,6 +121,11 @@ if (isProduction) {
 
     finalConfig = {
         ...baseConf,
+        output: {
+            path: path.resolve(__dirname, 'public'),
+            filename: '[name].[contenthash].js',
+            publicPath: '/'
+        },
         entry: prodEntry,
         mode: 'production',
         devtool: false,
@@ -129,7 +135,8 @@ if (isProduction) {
         },
         plugins: [
             ...plugins,
-            new MiniCssExtractPlugin()
+            new MiniCssExtractPlugin(),
+            new WebpackManifestPlugin({}),
         ]
     }
 } else {
@@ -141,6 +148,11 @@ if (isProduction) {
 
     finalConfig = {
         ...baseConf,
+        output: {
+            path: path.resolve(__dirname, 'public'),
+            filename: '[name].bundle.js',
+            publicPath: '/'
+        },
         entry: devEntry,
         mode: 'development',
         devtool: 'inline-source-map',

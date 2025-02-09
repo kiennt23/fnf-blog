@@ -5,6 +5,7 @@ import App from "./App";
 
 const initialData = window.__INITIAL_DATA__ || {};
 const { isAuthenticated, user } = initialData;
+const manifestData = window.__MANIFEST_DATA__ || {};
 
 hydrateRoot(
   document.getElementById("root") as HTMLElement,
@@ -17,8 +18,9 @@ hydrateRoot(
 if (process.env.NODE_ENV === "production" && "serviceWorker" in navigator) {
   window.addEventListener("load", async () => {
     try {
-      const registration =
-        await navigator.serviceWorker.register("/service-worker.js");
+      const registration = await navigator.serviceWorker.register(
+        `${manifestData["service-worker.js"]}`,
+      );
 
       // 1. Listen for SW updates
       registration.addEventListener("updatefound", () => {

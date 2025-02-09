@@ -1,8 +1,21 @@
 import React from "react";
+import path from "path";
+import fs from "fs";
+import { fileURLToPath } from "url";
 import { Request, Response } from "express";
 import { StaticRouter } from "react-router-dom";
 import { renderToString } from "react-dom/server";
 import App from "../frontend/App";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const manifestPath = path.resolve(__dirname, "../public/manifest.json");
+let manifest: Record<string, string> = {};
+
+if (fs.existsSync(manifestPath)) {
+  manifest = JSON.parse(fs.readFileSync(manifestPath, "utf8"));
+}
 
 const reactServerMiddleware = (req: Request, res: Response) => {
   const isAuthenticated = req.oidc.isAuthenticated();
@@ -36,7 +49,8 @@ const reactServerMiddleware = (req: Request, res: Response) => {
         <body>
           <div id="root">${appHtml}</div>
           <script>window.__INITIAL_DATA__ = ${userDataJson}</script>
-          <script src="/client.bundle.js"></script>
+          <script>window.__MANIFEST_DATA__ = ${JSON.stringify(manifest)}</script>
+          <script src="${manifest["client.js"] || "client.bundle.js"}"></script>
         </body>
       </html>
      `;

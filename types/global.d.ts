@@ -11,6 +11,9 @@ declare global {
       };
       // ...any other data
     };
+    __MANIFEST_DATA__?: {
+      [propName: string]: string;
+    };
   }
 
   interface WorkerGlobalScope {
