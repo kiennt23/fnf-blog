@@ -12,13 +12,11 @@ type AppProps = {
 const App: FC<AppProps> = ({ isAuthenticated, user }) => {
   return (
     <>
-      <div>
-        <NewSidebar isAuthenticated={isAuthenticated} user={user} />
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/about" element={<About />} />
-        </Routes>
-      </div>
+      <NewSidebar isAuthenticated={isAuthenticated} user={user} />
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/about" element={<About />} />
+      </Routes>
     </>
   );
 };
