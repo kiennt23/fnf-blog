@@ -11,10 +11,10 @@ import semver from 'semver';
 import { execSync } from 'child_process';
 
 /** Generate a fallback version like "0.1.0-rcabc" using the current time in base 36 */
-function getFallbackVersion() {
+function getFallbackVersion(prefix = '0.1.0-rc') {
     // For instance, turn 1695991234567 into something like "khg9u3" (base 36).
     const shortTime = Date.now().toString(36);
-    return `0.1.0-rc-${shortTime}`;
+    return `${prefix}-${shortTime}`;
 }
 
 function getVersionFromGit() {
@@ -61,7 +61,7 @@ function getVersionFromGit() {
                 .trim();
 
             // Combine them into something like: "1.3.0-abc123"
-            return `${nextVersion}-${commitHash}`;
+            return getFallbackVersion(`${nextVersion}-${commitHash}`);
         }
     } catch (e) {
         return getFallbackVersion();
