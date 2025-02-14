@@ -29,7 +29,7 @@ RUN bun install --frozen-lockfile
 COPY . .
 
 # Build application
-RUN bunx webpack --config webpack.fe.config.js
+RUN bunx vite build --config vite.config.ts
 
 # Final stage for app image
 FROM base

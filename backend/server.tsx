@@ -1,4 +1,4 @@
-import React from "react";
+import React, { StrictMode } from "react";
 import path from "path";
 import fs from "fs";
 import { fileURLToPath } from "url";
@@ -10,21 +10,26 @@ import App from "../frontend/App";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const manifestPath = path.resolve(__dirname, "../public/manifest.json");
-let manifest: Record<string, string> = {};
+const manifestPath = path.resolve(__dirname, "../public/.vite/manifest.json");
+let manifest: Record<string, Record<string, string>> = {};
 
 if (fs.existsSync(manifestPath)) {
   manifest = JSON.parse(fs.readFileSync(manifestPath, "utf8"));
 }
 
 const getScripts = () => {
-  if (!fs.existsSync(manifestPath))
-    return `<script src="/client.bundle.js"></script>`;
+  if (!fs.existsSync(manifestPath)) {
+    console.warn(`Could not find manifest from ${manifestPath}`);
+    // In development, load the client entry (adjust the path if needed)
+    return `<script type="module" src="/frontend/client.tsx"></script>`;
+  }
 
-  const manifest = JSON.parse(fs.readFileSync(manifestPath, "utf8"));
+  // In production, use the built manifest to load scripts.
   return Object.keys(manifest)
-    .filter((name) => !(name === "service-worker.js")) // we treat service worker differently
-    .map((name) => `<script src="${manifest[name]}" defer></script>`)
+    .filter((name) => name !== "web-worker/service-worker.ts")
+    .map(
+      (name) => `<script type="module" src="${manifest[name].file}"></script>`,
+    )
     .join("\n");
 };
 
@@ -33,9 +38,11 @@ const reactServerMiddleware = (req: Request, res: Response) => {
   const user = req.oidc.user;
 
   const jsx = (
-    <StaticRouter location={req.url}>
-      <App isAuthenticated={isAuthenticated} user={user} />
-    </StaticRouter>
+    <StrictMode>
+      <StaticRouter location={req.url}>
+        <App isAuthenticated={isAuthenticated} user={user} />
+      </StaticRouter>
+    </StrictMode>
   );
   const appHtml = renderToString(jsx);
 

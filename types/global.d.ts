@@ -12,7 +12,9 @@ declare global {
       // ...any other data
     };
     __MANIFEST_DATA__?: {
-      [propName: string]: string;
+      [propName: string]: {
+        [propName: string]: string;
+      };
     };
   }
 

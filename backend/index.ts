@@ -4,15 +4,14 @@ import express from "express";
 
 import { auth } from "express-openid-connect";
 
-import webpack from "webpack";
-import webpackDevMiddleware from "webpack-dev-middleware";
-import webpackHotMiddleware from "webpack-hot-middleware";
-
 import reactServerMiddleware from "./server";
-import { makeSwappableMiddleware } from "./devUtil";
 
 import dotenv from "dotenv";
+import { ViteDevServer } from "vite";
+
 dotenv.config();
+
+const base = process.env.BASE || "/";
 
 const app = express();
 
@@ -22,20 +21,6 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 app.use(express.static(path.resolve(__dirname, "../static")));
-
-if (isProd) {
-  // Serve static files from /public (where Webpack bundles client code)
-  app.use(express.static(path.resolve(__dirname, "../public")));
-} else {
-  const webpackConfig = await import(
-    path.resolve(__dirname, "../webpack.fe.config.js")
-  );
-  const compiler = webpack(webpackConfig.default);
-  app.use(webpackDevMiddleware(compiler));
-  app.use(webpackHotMiddleware(compiler));
-}
-
-const PORT = process.env.PORT || 3000;
 
 const config = {
   authRequired: false, // If true, all routes require authentication by default
@@ -47,17 +32,44 @@ const config = {
   clientSecret: process.env.AUTH0_CLIENT_SECRET,
 };
 
+let vite: ViteDevServer;
+
+if (!isProd) {
+  // In development, create a Vite dev server in middleware mode
+  const { createServer: createViteServer } = await import("vite");
+  vite = await createViteServer({
+    server: { middlewareMode: true },
+    appType: "custom",
+    base,
+  });
+
+  app.use(vite.middlewares);
+} else {
+  // In production, serve the built static files from /public
+  const compression = (await import("compression")).default;
+  const sirv = (await import("sirv")).default;
+  app.use(compression());
+  app.use(base, sirv("./public", { extensions: [] }));
+}
+
 app.use(auth(config));
 
-const [swap, swappableReactServerMiddleware] = makeSwappableMiddleware(
-  reactServerMiddleware,
-);
-
-app.get("*", swappableReactServerMiddleware);
-
-import.meta.hot?.accept("./server", () => {
-  swap(reactServerMiddleware);
+app.get("*", async (req, res) => {
+  try {
+    let ssrMiddleware = reactServerMiddleware;
+    if (!isProd) {
+      ssrMiddleware = (await import("./server")).default;
+    }
+    ssrMiddleware(req, res);
+  } catch (e: unknown) {
+    const err = e as Error;
+    vite?.ssrFixStacktrace(err);
+    console.log(err.stack);
+    res.status(500).end(err.stack);
+  }
 });
+
+const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`);

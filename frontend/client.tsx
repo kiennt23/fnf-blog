@@ -1,4 +1,4 @@
-import React from "react";
+import React, { StrictMode } from "react";
 import { hydrateRoot } from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
 import App from "./App";
@@ -9,9 +9,11 @@ const manifestData = window.__MANIFEST_DATA__ || {};
 
 hydrateRoot(
   document.getElementById("root") as HTMLElement,
-  <BrowserRouter>
-    <App isAuthenticated={isAuthenticated} user={user} />
-  </BrowserRouter>,
+  <StrictMode>
+    <BrowserRouter>
+      <App isAuthenticated={isAuthenticated} user={user} />
+    </BrowserRouter>
+  </StrictMode>,
 );
 
 // Only run SW code if available
@@ -19,7 +21,7 @@ if (process.env.NODE_ENV === "production" && "serviceWorker" in navigator) {
   window.addEventListener("load", async () => {
     try {
       const registration = await navigator.serviceWorker.register(
-        `${manifestData["service-worker.js"]}`,
+        `${manifestData["web-worker/service-worker.ts"].file}`,
       );
 
       // 1. Listen for SW updates
