@@ -1,6 +1,11 @@
 export {};
 
 declare global {
+  type AppProps = {
+    isAuthenticated?: boolean;
+    user?: { name?: string };
+  };
+
   interface Window {
     __INITIAL_DATA__?: {
       isAuthenticated?: boolean;

@@ -7,14 +7,20 @@ const initialData = window.__INITIAL_DATA__ || {};
 const { isAuthenticated, user } = initialData;
 const manifestData = window.__MANIFEST_DATA__ || {};
 
-hydrateRoot(
-  document.getElementById("root") as HTMLElement,
-  <StrictMode>
-    <BrowserRouter>
-      <App isAuthenticated={isAuthenticated} user={user} />
-    </BrowserRouter>
-  </StrictMode>,
-);
+const rootElement = document.getElementById("root");
+
+if (rootElement) {
+  hydrateRoot(
+    rootElement,
+    <StrictMode>
+      <BrowserRouter>
+        <App isAuthenticated={isAuthenticated} user={user} />
+      </BrowserRouter>
+    </StrictMode>,
+  );
+} else {
+  console.error("Could not find #root element!");
+}
 
 // Only run SW code if available
 if (process.env.NODE_ENV === "production" && "serviceWorker" in navigator) {

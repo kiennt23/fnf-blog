@@ -4,11 +4,6 @@ import Home from "./pages/Home";
 import About from "./pages/About";
 import { Sidebar } from "./ui/components";
 
-type AppProps = {
-  isAuthenticated?: boolean;
-  user?: { name?: string };
-};
-
 const App: FC<AppProps> = ({ isAuthenticated, user }) => {
   return (
     <>

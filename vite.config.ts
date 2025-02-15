@@ -63,7 +63,7 @@ export default defineConfig(({ command }) => {
             outDir: path.resolve(__dirname, 'public'),
             target: 'esnext',
             sourcemap: !isProduction, // inline source maps in dev
-            manifest: isProduction && 'manifest.json', // generate manifest.json in production
+            manifest: 'manifest.json',
             // Use Terser for minification in production (Vite defaults to esbuild otherwise)
             minify: isProduction ? 'terser' : false,
             rollupOptions: isProduction
