@@ -74,10 +74,14 @@ if (!isProd) {
   app.use(base, sirv("./public", { extensions: [] }));
 }
 
-app.use(auth(config));
 app.use(express.static(path.resolve(__dirname, "../static")));
 
+app.use(auth(config));
+
 app.get("*", async (req, res) => {
+  const isAuthenticated = req.oidc.isAuthenticated();
+  const user = req.oidc.user;
+
   const url = req.originalUrl;
   try {
     let template = fs.readFileSync(
@@ -92,8 +96,7 @@ app.get("*", async (req, res) => {
     const { render } = isProd
       ? await import("./entry.tsx")
       : await vite.ssrLoadModule("/backend/entry.tsx");
-    const isAuthenticated = req.oidc.isAuthenticated();
-    const user = req.oidc.user;
+
     const appHtml = await render(url, {
       isAuthenticated,
       user,

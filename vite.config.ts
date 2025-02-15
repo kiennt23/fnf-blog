@@ -52,7 +52,13 @@ export default defineConfig(({ command }) => {
         base: '/', // equivalent to webpack's publicPath
         plugins: [
             // Vite’s React plugin (includes Fast Refresh in dev)
-            react(),
+            react({
+                babel: {
+                    plugins: [
+                        ["babel-plugin-react-compiler"]
+                    ]
+                }
+            }),
         ],
         // Define global constants (replaces webpack.DefinePlugin)
         define: {

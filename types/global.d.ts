@@ -3,7 +3,7 @@ export {};
 declare global {
   type AppProps = {
     isAuthenticated?: boolean;
-    user?: { name?: string };
+    user?: { name?: string; email?: string };
   };
 
   interface Window {

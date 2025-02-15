@@ -5,9 +5,10 @@ import { Link } from "react-router-dom";
 const Sidebar: FC<{
   isAuthenticated?: boolean;
   user?: { name?: string };
-}> = ({ isAuthenticated, user }) => {
+  className?: string;
+}> = ({ isAuthenticated, user, ...props }) => {
   return (
-    <Root orientation="vertical">
+    <Root orientation="vertical" {...props}>
       <List>
         <Item>
           <Link to="/">Home</Link>
@@ -15,13 +16,9 @@ const Sidebar: FC<{
         <Item>
           <Link to="/about">About</Link>
         </Item>
-        {isAuthenticated ? (
+        {isAuthenticated && (
           <Item>
             Welcome {user?.name}! <a href="/logout">Log out</a>
-          </Item>
-        ) : (
-          <Item>
-            <a href="/login">Login</a>
           </Item>
         )}
       </List>

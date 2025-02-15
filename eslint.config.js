@@ -4,6 +4,7 @@ import reactPlugin from 'eslint-plugin-react';
 import reactHooksPlugin from 'eslint-plugin-react-hooks';
 import jsxA11yPlugin from 'eslint-plugin-jsx-a11y';
 import prettierPlugin from 'eslint-plugin-prettier';
+import reactCompiler from 'eslint-plugin-react-compiler'
 
 export default [
     {
@@ -36,6 +37,7 @@ export default [
             'react-hooks': reactHooksPlugin,
             'jsx-a11y': jsxA11yPlugin,
             prettier: prettierPlugin,
+            'react-compiler': reactCompiler,
         },
 
         // In Flat Config, "rules" merges with what's already set from the base config
@@ -53,6 +55,7 @@ export default [
             // e.g. '@typescript-eslint/no-explicit-any': 'off',
             ...jsxA11yPlugin.configs.recommended.rules,
             ...prettierPlugin.configs.recommended.rules,
+            ...reactCompiler.configs.recommended.rules,
         },
 
         settings: {
