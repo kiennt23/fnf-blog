@@ -7,12 +7,12 @@ self.addEventListener("install", (event) => {
   const swEvent = event as ExtendableEvent;
   swEvent.waitUntil(
     caches.open(CACHE_NAME).then(async (cache) => {
-      const manifest = await fetch("/.vite/manifest.json", {});
+      const manifest = await fetch("/manifest.json", {});
       const manifestJson = await manifest.json();
 
       const urlToCache = Object.keys(manifestJson)
         .filter((name) => name !== "web-worker/service-worker.ts")
-        .map((name) => manifestJson[name]);
+        .map((name) => manifestJson[name].file);
       return cache.addAll(urlToCache);
     }),
   );

@@ -10,7 +10,7 @@ import App from "../frontend/App";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const manifestPath = path.resolve(__dirname, "../public/.vite/manifest.json");
+const manifestPath = path.resolve(__dirname, "../public/manifest.json");
 let manifest: Record<string, Record<string, string>> = {};
 
 if (fs.existsSync(manifestPath)) {

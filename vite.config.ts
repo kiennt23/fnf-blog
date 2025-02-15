@@ -63,7 +63,7 @@ export default defineConfig(({ command }) => {
             outDir: path.resolve(__dirname, 'public'),
             target: 'esnext',
             sourcemap: !isProduction, // inline source maps in dev
-            manifest: isProduction, // generate manifest.json in production
+            manifest: isProduction && 'manifest.json', // generate manifest.json in production
             // Use Terser for minification in production (Vite defaults to esbuild otherwise)
             minify: isProduction ? 'terser' : false,
             rollupOptions: isProduction
@@ -84,9 +84,6 @@ export default defineConfig(({ command }) => {
                     },
                 }
                 : undefined,
-        },
-        ssr: {
-            noExternal: ['react-router-dom']
         },
         resolve: {
             // Vite automatically resolves these extensions, but you can list them explicitly if desired.
