@@ -1,3 +1,4 @@
+import "newrelic";
 import path from "path";
 import { fileURLToPath } from "url";
 import express from "express";
@@ -120,8 +121,6 @@ app.get("*", async (req, res) => {
       isAuthenticated,
       user,
     });
-
-    console.log(`App rendered: ${JSON.stringify(appHtml, null, 2)}`);
 
     if (!isProd) {
       template = template.replace(
