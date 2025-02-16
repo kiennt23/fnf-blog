@@ -38,9 +38,9 @@ if (fs.existsSync(manifestPath)) {
 }
 
 const getStyles = () => {
-  if (!fs.existsSync(manifestPath)) {
+  if (!isProd || !fs.existsSync(manifestPath)) {
     console.warn(
-      `You are likely running in development mode. No CSS bundling required`,
+      `You are running in development mode. No CSS bundling required`,
     );
     return "";
   }
@@ -57,7 +57,7 @@ const getStyles = () => {
 };
 
 const getScripts = () => {
-  if (!fs.existsSync(manifestPath)) {
+  if (!isProd || !fs.existsSync(manifestPath)) {
     console.warn(`Could not find manifest from ${manifestPath}`);
     // In development, load the client entry (adjust the path if needed)
     return `
