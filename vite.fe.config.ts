@@ -4,6 +4,7 @@ import { execSync } from 'child_process';
 import semver from 'semver';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import commonConfig from "./vite.common.config";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -64,13 +65,7 @@ export default defineConfig(({ command }) => {
         define: {
             SERVICE_WORKER_VERSION: JSON.stringify(versionString),
         },
-        css: {
-            modules: {
-                localsConvention: "camelCaseOnly",
-                generateScopedName: "[hash:base64:5]", // Ensure CSS class names are preserved
-            },
-            transformer: 'lightningcss'
-        },
+        css: commonConfig.css,
         build: {
             // Output to the "public" folder (as in your webpack config)
             outDir: path.resolve(__dirname, 'public'),

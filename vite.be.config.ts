@@ -1,14 +1,9 @@
 import { defineConfig } from "vite";
 import path from "path";
+import defaultConfig from "./vite.common.config";
 
 export default defineConfig({
-  css: {
-    modules: {
-      localsConvention: "camelCaseOnly",
-      generateScopedName: "[hash:base64:5]", // Ensure CSS class names are preserved
-    },
-    transformer: 'lightningcss'
-  },
+  css: defaultConfig.css,
   build: {
     ssr: "backend/index.ts",
     outDir: path.resolve(__dirname, "dist-server"),
@@ -20,7 +15,7 @@ export default defineConfig({
         "path",
         "dotenv",
         "vite",
-        "bun", // Ensure Bun isn't bundled in case you still use it
+        "bun",
       ],
       input: path.resolve(__dirname, "backend/index.ts"),
       output: {
