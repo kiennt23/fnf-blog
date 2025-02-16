@@ -4,6 +4,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
+    "clean": "rimraf dist dist-server",
     "build:fe": "vite build --config vite.fe.config.ts",
     "build:be": "vite build --config vite.be.config.ts",
     "build": "npm run build:fe && npm run build:be",
@@ -61,6 +62,7 @@
     "lightningcss": "^1.29.1",
     "mini-css-extract-plugin": "^2.9.2",
     "prettier": "^3.4.2",
+    "rimraf": "^6.0.1",
     "semver": "^7.6.3",
     "style-loader": "^4.0.0",
     "tsx": "^4.19.2",
