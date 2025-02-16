@@ -1,0 +1,17 @@
+.appContainer {
+    display: grid;
+    grid-template-areas: "header header" "sidebar body";
+    grid-template-columns: 200px 1fr;
+}
+
+.headerContainer {
+    grid-area: header;
+}
+
+.sidebarContainer {
+    grid-area: sidebar;
+}
+
+.bodyContainer {
+    grid-area: body;
+}

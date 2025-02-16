@@ -1,18 +1,24 @@
 import React, { FC } from "react";
 import { Routes, Route } from "react-router-dom";
-import Home from "./pages/Home";
-import About from "./pages/About";
 import { Header, Sidebar, Body } from "./ui/components";
+import { About, Frames, Functions, Home } from "./pages";
+import styles from "./App.module.css";
 
 const App: FC<AppProps> = ({ isAuthenticated, user }) => {
   return (
     <>
-      <div>
-        <Header />
-        <Sidebar isAuthenticated={isAuthenticated} user={user} />
-        <Body>
+      <div className={styles.appContainer}>
+        <Header className={styles.headerContainer} />
+        <Sidebar
+          isAuthenticated={isAuthenticated}
+          user={user}
+          className={styles.sidebarContainer}
+        />
+        <Body className={styles.bodyContainer}>
           <Routes>
             <Route path="/" element={<Home />} />
+            <Route path="/frames" element={<Frames />} />
+            <Route path="/functions" element={<Functions />} />
             <Route path="/about" element={<About />} />
           </Routes>
         </Body>

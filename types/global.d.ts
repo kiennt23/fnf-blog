@@ -1,6 +1,8 @@
 export {};
 
 declare global {
+  declare module "*.module.css";
+
   type AppProps = {
     isAuthenticated?: boolean;
     user?: { name?: string; email?: string };

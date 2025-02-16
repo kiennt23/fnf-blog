@@ -14,6 +14,12 @@ const Sidebar: FC<{
           <Link to="/">Home</Link>
         </Item>
         <Item>
+          <Link to="/frames">Frames</Link>
+        </Item>
+        <Item>
+          <Link to="/functions">Functions</Link>
+        </Item>
+        <Item>
           <Link to="/about">About</Link>
         </Item>
         {isAuthenticated && (
