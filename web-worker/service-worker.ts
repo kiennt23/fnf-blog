@@ -2,7 +2,7 @@ declare const SERVICE_WORKER_VERSION: string;
 
 const CACHE_NAME = SERVICE_WORKER_VERSION;
 
-// During the install phase, cache static resources
+// During the install phase, cache public resources
 self.addEventListener("install", (event) => {
   const swEvent = event as ExtendableEvent;
   swEvent.waitUntil(

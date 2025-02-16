@@ -30,7 +30,7 @@ const config = {
   clientSecret: process.env.AUTH0_CLIENT_SECRET,
 };
 
-const manifestPath = path.resolve(__dirname, "../public/manifest.json");
+const manifestPath = path.resolve(__dirname, "../dist/manifest.json");
 let manifest: Record<string, Record<string, string | string[]>> = {};
 
 if (fs.existsSync(manifestPath)) {
@@ -87,14 +87,12 @@ if (!isProd) {
 
   app.use(vite.middlewares);
 } else {
-  // In production, serve the built static files from /public
+  // In production, serve the built public files from /public
   const compression = (await import("compression")).default;
   const sirv = (await import("sirv")).default;
   app.use(compression());
-  app.use(base, sirv("./public", { extensions: [] }));
+  app.use(base, sirv("./dist", { extensions: [] }));
 }
-
-app.use(express.static(path.resolve(__dirname, "../static")));
 
 app.use(auth(config));
 

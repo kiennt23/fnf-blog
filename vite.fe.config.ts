@@ -66,9 +66,11 @@ export default defineConfig(({ command }) => {
             SERVICE_WORKER_VERSION: JSON.stringify(versionString),
         },
         css: commonConfig.css,
+        publicDir: path.resolve(__dirname, 'public'),
         build: {
             // Output to the "public" folder (as in your webpack config)
-            outDir: path.resolve(__dirname, 'public'),
+            outDir: path.resolve(__dirname, 'dist'),
+            copyPublicDir: true,
             target: 'esnext',
             sourcemap: !isProduction, // inline source maps in dev
             manifest: 'manifest.json',

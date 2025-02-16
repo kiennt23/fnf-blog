@@ -2,6 +2,6 @@
 .env
 *.log
 
+dist
 dist-server
-public
 node_modules

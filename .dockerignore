@@ -2,5 +2,5 @@
 .env
 
 dist
-public
+dist-server
 node_modules
