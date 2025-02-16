@@ -19,17 +19,19 @@ FROM base AS build
 # Install packages needed to build node modules
 RUN apt-get update -qq && \
     apt-get install --no-install-recommends -y build-essential node-gyp pkg-config python-is-python3
-RUN npm install -g bun
 
 # Install node modules
 COPY package-lock.json package.json ./
-RUN bun install --frozen-lockfile
+RUN npm ci --include=dev
 
 # Copy application code
 COPY . .
 
 # Build application
-RUN bunx vite build --config vite.config.ts
+RUN npm run build
+
+# Remove development dependencies
+RUN npm prune --omit=dev
 
 # Final stage for app image
 FROM base
@@ -37,8 +39,6 @@ FROM base
 # Copy built application
 COPY --from=build /app /app
 
-RUN npm install -g bun
-
 # Start the server by default, this can be overwritten at runtime
 EXPOSE 3000
-CMD [ "bun", "backend/index.ts" ]
+CMD [ "node", "dist-server/index.js" ]

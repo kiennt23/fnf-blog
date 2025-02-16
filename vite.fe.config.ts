@@ -64,6 +64,13 @@ export default defineConfig(({ command }) => {
         define: {
             SERVICE_WORKER_VERSION: JSON.stringify(versionString),
         },
+        css: {
+            modules: {
+                localsConvention: "camelCaseOnly",
+                generateScopedName: "[hash:base64:5]", // Ensure CSS class names are preserved
+            },
+            transformer: 'lightningcss'
+        },
         build: {
             // Output to the "public" folder (as in your webpack config)
             outDir: path.resolve(__dirname, 'public'),
@@ -72,6 +79,7 @@ export default defineConfig(({ command }) => {
             manifest: 'manifest.json',
             // Use Terser for minification in production (Vite defaults to esbuild otherwise)
             minify: isProduction ? 'terser' : false,
+            cssMinify: 'lightningcss',
             rollupOptions: isProduction
                 ? {
                     // In production we have two entry points: one for the client and one for the service worker

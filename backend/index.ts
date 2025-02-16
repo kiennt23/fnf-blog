@@ -30,11 +30,30 @@ const config = {
 };
 
 const manifestPath = path.resolve(__dirname, "../public/manifest.json");
-let manifest: Record<string, Record<string, string>> = {};
+let manifest: Record<string, Record<string, string | string[]>> = {};
 
 if (fs.existsSync(manifestPath)) {
   manifest = JSON.parse(fs.readFileSync(manifestPath, "utf8"));
 }
+
+const getStyles = () => {
+  if (!fs.existsSync(manifestPath)) {
+    console.warn(
+      `You are likely running in development mode. No CSS bundling required`,
+    );
+    return "";
+  }
+
+  return Object.keys(manifest)
+    .filter((name) => name !== "web-worker/service-worker.ts")
+    .map((name) => {
+      const cssAssets: string[] = manifest[name].css as string[];
+      return cssAssets
+        .map((asset) => `<link rel="stylesheet" href="${asset}">`)
+        .reduce((result, name) => `${result}\n${name}\n`);
+    })
+    .reduce((result, linkTag) => `${result}\n${linkTag}\n`);
+};
 
 const getScripts = () => {
   if (!fs.existsSync(manifestPath)) {
@@ -49,9 +68,9 @@ const getScripts = () => {
   // In production, use the built manifest to load scripts.
   return Object.keys(manifest)
     .filter((name) => name !== "web-worker/service-worker.ts")
-    .map(
-      (name) => `<script type="module" src="${manifest[name].file}"></script>`,
-    )
+    .map((name) => {
+      return `<script type="module" src="${manifest[name].file}"></script>`;
+    })
     .join("\n");
 };
 
@@ -102,6 +121,8 @@ app.get("*", async (req, res) => {
       user,
     });
 
+    console.log(`App rendered: ${JSON.stringify(appHtml, null, 2)}`);
+
     if (!isProd) {
       template = template.replace(
         "<!-- third-party-scripts-outlet -->",
@@ -110,7 +131,9 @@ app.get("*", async (req, res) => {
         `,
       );
     }
-
+    template = template.replace("<!-- stylesheets-outlet -->", () =>
+      getStyles(),
+    );
     template = template.replace("<!-- app-outlet -->", () => appHtml);
     template = template.replace(
       "<!-- init-data-outlet -->",
