@@ -14,4 +14,4 @@ export const Content: FC<{ children: ReactNode; className?: string }> = ({
 }: {
   children: ReactNode;
   className?: string;
-}) => <p {...props}>{children}</p>;
+}) => <div {...props}>{children}</div>;

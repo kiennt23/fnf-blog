@@ -50,15 +50,15 @@ const getStyles = () => {
     .map((name) => {
       const cssAssets: string[] = manifest[name].css as string[];
       return cssAssets
-        .map((asset) => `<link rel="stylesheet" href="${asset}">`)
+        ?.map((asset) => `<link rel="stylesheet" href="${asset}">`)
         .reduce((result, name) => `${result}\n${name}\n`);
     })
-    .reduce((result, linkTag) => `${result}\n${linkTag}\n`);
+    .reduce((result, linkTag) => `${result ? result : ""}\n${linkTag}\n`);
 };
 
 const getScripts = () => {
   if (!isProd || !fs.existsSync(manifestPath)) {
-    console.warn(`Could not find manifest from ${manifestPath}`);
+    console.warn(`You are running in development mode`);
     // In development, load the client entry (adjust the path if needed)
     return `
         <script type="module" src="/@vite/client"></script>
@@ -120,14 +120,7 @@ app.get("*", async (req, res) => {
       user,
     });
 
-    if (!isProd) {
-      template = template.replace(
-        "<!-- third-party-scripts-outlet -->",
-        () => `
-            <script src="https://unpkg.com/react-scan/dist/auto.global.js"></script>
-        `,
-      );
-    } else {
+    if (isProd) {
       template = template.replace(
         "<!-- third-party-scripts-outlet -->",
         () => `
@@ -149,6 +142,7 @@ app.get("*", async (req, res) => {
         `,
       );
     }
+
     template = template.replace("<!-- stylesheets-outlet -->", () =>
       getStyles(),
     );
