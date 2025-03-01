@@ -1,7 +1,7 @@
 import React, { FC } from "react";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import { Header, Sidebar, Body } from "./ui/components";
-import { About, Frames, Functions, Home } from "./pages";
+import { About, Frames, Functions, Home, Editor } from "./pages";
 import styles from "./App.module.css";
 
 const App: FC<AppProps> = ({ isAuthenticated, user }) => {
@@ -20,6 +20,8 @@ const App: FC<AppProps> = ({ isAuthenticated, user }) => {
             <Route path="/frames" element={<Frames />} />
             <Route path="/functions" element={<Functions />} />
             <Route path="/about" element={<About />} />
+            {isAuthenticated && <Route path="/editor" element={<Editor />} />}
+            <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </Body>
       </div>

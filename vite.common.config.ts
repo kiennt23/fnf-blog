@@ -6,8 +6,12 @@ const commonConfig: UserConfig = {
       localsConvention: "camelCaseOnly",
       generateScopedName: "[hash:base64:5]", // Ensure CSS class names are preserved
     },
-    transformer: 'lightningcss'
-  }
-}
+    transformer: "lightningcss",
+  },
+  resolve: {
+    extensions: [".ts", ".tsx", ".js", ".jsx"],
+  },
+  define: {},
+};
 
 export default commonConfig;

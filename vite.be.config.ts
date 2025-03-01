@@ -1,22 +1,23 @@
-import { defineConfig } from "vite";
 import path from "path";
-import defaultConfig from "./vite.common.config";
+import commonConfig from "./vite.common.config";
+import { defineConfig } from "vite";
 
 export default defineConfig({
-  css: defaultConfig.css,
+  css: {
+    ...commonConfig.css,
+  },
+  resolve: {
+    ...commonConfig.resolve,
+  },
+  define: {
+    ...commonConfig.define,
+  },
   build: {
     ssr: "backend/index.ts",
     outDir: path.resolve(__dirname, "dist-server"),
     target: "node23",
     rollupOptions: {
-      external: [
-        "express",
-        "fs",
-        "path",
-        "dotenv",
-        "vite",
-        "bun",
-      ],
+      external: ["express", "fs", "path", "dotenv", "vite", "bun"],
       input: path.resolve(__dirname, "backend/index.ts"),
       output: {
         entryFileNames: "index.js",

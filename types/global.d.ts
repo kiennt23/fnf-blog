@@ -30,6 +30,9 @@ declare global {
   }
 
   interface ImportMeta {
+    env?: {
+      SSR?: boolean;
+    };
     hot?: {
       accept: (module: string, callback?: () => void) => void;
       dispose: (callback: (data: never) => void) => void;

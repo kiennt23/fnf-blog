@@ -55,7 +55,7 @@ export default [
             // e.g. '@typescript-eslint/no-explicit-any': 'off',
             ...jsxA11yPlugin.configs.recommended.rules,
             ...prettierPlugin.configs.recommended.rules,
-            ...reactCompiler.configs.recommended.rules,
+            'react-compiler/react-compiler': 'error',
         },
 
         settings: {

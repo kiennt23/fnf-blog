@@ -16,7 +16,8 @@
   "include": [
     "backend/**/*",
     "frontend/**/*",
-    "types/global.d.ts"
+    "types/global.d.ts",
+    "vite.*"
   ],
   "exclude": [
     "node_modules",

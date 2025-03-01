@@ -23,9 +23,14 @@ const Sidebar: FC<{
           <Link to="/about">About</Link>
         </Item>
         {isAuthenticated && (
-          <Item>
-            Welcome {user?.name}! <a href="/logout">Log out</a>
-          </Item>
+          <>
+            <Item>
+              <Link to="/editor">Editor</Link>
+            </Item>
+            <Item>
+              Welcome {user?.name}! <a href="/logout">Log out</a>
+            </Item>
+          </>
         )}
       </List>
     </Root>
