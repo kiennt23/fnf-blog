@@ -7,11 +7,11 @@ const commonConfig: UserConfig = {
       generateScopedName: "[hash:base64:5]", // Ensure CSS class names are preserved
     },
     transformer: "lightningcss",
+    lightningcss: {
+      cssModules: true,
+    },
+    devSourcemap: true,
   },
-  resolve: {
-    extensions: [".ts", ".tsx", ".js", ".jsx"],
-  },
-  define: {},
 };
 
 export default commonConfig;
