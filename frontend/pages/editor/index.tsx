@@ -11,13 +11,13 @@ import {
 
 import { exampleSetup } from "prosemirror-example-setup";
 
-import { Content, Title } from "../ui/components";
+import { Content, Title } from "../../ui/components";
 // import { useWhyDidYouUpdate } from "../utils/hooks.ts";
 
 import "prosemirror-view/style/prosemirror.css";
 import "prosemirror-example-setup/style/style.css";
 
-import "./Editor.css";
+import "./styles.css";
 
 class MarkdownView {
   private textarea: HTMLTextAreaElement;
