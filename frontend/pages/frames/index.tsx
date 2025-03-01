@@ -1,5 +1,5 @@
 import React, { FC } from "react";
-import { Content, Title } from "../ui/components";
+import { Content, Title } from "../../ui/components";
 
 const Frames: FC = () => {
   return (

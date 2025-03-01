@@ -1,7 +1,11 @@
 import React, { FC } from "react";
-import { Routes, Route, useNavigate } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import { Header, Sidebar, Body } from "./ui/components";
-import { About, Frames, Functions, Home, Editor } from "./pages";
+import Home from "./pages";
+import Frames from "./pages/frames";
+import Functions from "./pages/functions";
+import About from "./pages/about";
+import Editor from "./pages/editor";
 import styles from "./App.module.css";
 
 const App: FC<AppProps> = ({ isAuthenticated, user }) => {
