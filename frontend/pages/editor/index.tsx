@@ -1,4 +1,4 @@
-import React, { FC, memo, useEffect, useState } from "react";
+import React, { FC, memo, useEffect, useRef, useState } from "react";
 
 import { EditorView } from "prosemirror-view";
 import { EditorState } from "prosemirror-state";
@@ -71,33 +71,35 @@ class ProseMirrorView {
 }
 
 const Editor: FC = () => {
-  const [editorType, setEditorType] = useState("markdown");
+  const [editorType, setEditorType] = useState("wysiwyg");
+  const editorRef = useRef<MarkdownView | ProseMirrorView | undefined>(
+    undefined,
+  );
 
   useEffect(() => {
     if (!import.meta.env?.SSR) {
+      if (editorRef.current) {
+        editorRef.current.destroy();
+      }
+      let view: MarkdownView | ProseMirrorView;
       let editorPlace = document.querySelector("#editor");
       let contentPlace = document.querySelector("#content");
       if (editorPlace && contentPlace) {
-        let view = new MarkdownView(
-          editorPlace,
-          contentPlace?.textContent || "",
-        );
+        if (editorType === "wysiwyg") {
+          view = new ProseMirrorView(
+            editorPlace,
+            contentPlace?.textContent || "",
+          );
+        } else {
+          view = new MarkdownView(editorPlace, contentPlace?.textContent || "");
+        }
 
-        document.querySelectorAll("input[type=radio]").forEach((button) => {
-          button.addEventListener("change", () => {
-            if (!button.checked) return;
-            let View =
-              button.value == "markdown" ? MarkdownView : ProseMirrorView;
-            if (view instanceof View) return;
-            let content = view.content;
-            view.destroy();
-            view = new View(editorPlace, content);
-            view.focus();
-          });
-        });
+        editorRef.current = view;
+
+        view.focus();
       }
     }
-  }, []);
+  }, [editorType]);
 
   return (
     <>
@@ -105,20 +107,20 @@ const Editor: FC = () => {
       <Content>
         <div id="editor" />
         <div id="content" />
-        <label htmlFor="markdown">Markdown</label>
-        <input
-          id="markdown"
-          type="radio"
-          value="markdown"
-          checked={editorType === "markdown"}
-          onChange={(e) => setEditorType(e.target.value)}
-        />
         <label htmlFor="wysiwyg">WYSIWYG</label>
         <input
           id="wysiwyg"
           type="radio"
           value="wysiwyg"
           checked={editorType === "wysiwyg"}
+          onChange={(e) => setEditorType(e.target.value)}
+        />
+        <label htmlFor="markdown">Markdown</label>
+        <input
+          id="markdown"
+          type="radio"
+          value="markdown"
+          checked={editorType === "markdown"}
           onChange={(e) => setEditorType(e.target.value)}
         />
       </Content>
