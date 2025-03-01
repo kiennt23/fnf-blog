@@ -7,8 +7,8 @@
     "clean": "rimraf dist dist-server",
     "build:fe": "vite build --config vite.fe.config.ts",
     "build:be": "vite build --config vite.be.config.ts",
-    "build": "npm run build:fe && npm run build:be",
-    "start": "node --experimental-loader=newrelic/esm-loader.mjs dist-server/index.js",
+    "build": "cross-env NODE_ENV=production npm run build:fe && npm run build:be",
+    "start": "cross-env NODE_ENV=production node --experimental-loader=newrelic/esm-loader.mjs dist-server/index.js",
     "dev": "cross-env NODE_ENV=development bun backend/index.ts",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix"
@@ -19,7 +19,6 @@
   "description": "",
   "dependencies": {
     "@radix-ui/react-navigation-menu": "^1.2.4",
-    "bun": "^1.2.4",
     "compression": "^1.8.0",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",

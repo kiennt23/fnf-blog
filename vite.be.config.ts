@@ -3,15 +3,7 @@ import commonConfig from "./vite.common.config";
 import { defineConfig } from "vite";
 
 export default defineConfig({
-  css: {
-    ...commonConfig.css,
-  },
-  resolve: {
-    ...commonConfig.resolve,
-  },
-  define: {
-    ...commonConfig.define,
-  },
+  css: commonConfig.css,
   build: {
     ssr: "backend/index.ts",
     outDir: path.resolve(__dirname, "dist-server"),

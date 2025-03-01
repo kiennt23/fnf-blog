@@ -60,11 +60,6 @@ export default defineConfig(() => {
       // Vite’s React plugin (includes Fast Refresh in dev)
       react({
         babel: {
-          presets: [
-            "@babel/preset-env",
-            "@babel/preset-react",
-            "@babel/preset-typescript",
-          ],
           plugins: [["babel-plugin-react-compiler"]],
         },
       }),
@@ -74,12 +69,7 @@ export default defineConfig(() => {
       SERVICE_WORKER_VERSION: JSON.stringify(versionString),
       ...commonConfig.define,
     },
-    css: {
-      ...commonConfig.css,
-    },
-    resolve: {
-      ...commonConfig.resolve,
-    },
+    css: commonConfig.css,
     publicDir: path.resolve(__dirname, "public"),
     build: {
       // Output to the "public" folder (as in your webpack config)
@@ -112,6 +102,9 @@ export default defineConfig(() => {
             },
           }
         : undefined,
+    },
+    resolve: {
+      extensions: [".ts", ".tsx", ".js", ".jsx", ".css"],
     },
   };
 });

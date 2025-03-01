@@ -45,7 +45,7 @@ const getStyles = () => {
     return "";
   }
 
-  return Object.keys(manifest)
+  let cssAssets = Object.keys(manifest)
     .filter((name) => name !== "web-worker/service-worker.ts")
     .map((name) => {
       const cssAssets: string[] = manifest[name].css as string[];
@@ -54,6 +54,7 @@ const getStyles = () => {
         .reduce((result, name) => `${result}\n${name}\n`);
     })
     .reduce((result, linkTag) => `${result ? result : ""}\n${linkTag}\n`);
+  return cssAssets || "";
 };
 
 const getScripts = () => {
