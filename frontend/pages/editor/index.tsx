@@ -1,4 +1,12 @@
-import React, { FC, memo, useEffect, useRef, useState } from "react";
+import React, {
+  ChangeEvent,
+  FC,
+  memo,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 
 import { EditorView } from "prosemirror-view";
 import { EditorState } from "prosemirror-state";
@@ -19,6 +27,8 @@ import "prosemirror-example-setup/style/style.css";
 
 import "./styles.css";
 
+type EditorType = "wysiwyg" | "markdown";
+
 class MarkdownView {
   private div: HTMLDivElement;
   constructor(
@@ -32,12 +42,18 @@ class MarkdownView {
     this.div.textContent = content;
   }
 
-  get content() {
+  get content(): string | null {
     return this.div.textContent;
   }
+
+  set content(content: string) {
+    this.div.textContent = content;
+  }
+
   focus() {
     this.div.focus();
   }
+
   destroy() {
     this.div.remove();
   }
@@ -58,12 +74,22 @@ class ProseMirrorView {
         doc: defaultMarkdownParser.parse(content),
         plugins: exampleSetup({ schema }),
       }),
+      handleDOMEvents: {
+        change: (view, event) => {
+          console.log("change", view, event);
+        },
+      },
     });
   }
 
-  get content() {
+  get content(): string {
     return defaultMarkdownSerializer.serialize(this.view.state.doc);
   }
+
+  set content(content: string) {
+    this.view.state.doc = defaultMarkdownParser.parse(content);
+  }
+
   focus() {
     this.view.focus();
   }
@@ -73,17 +99,25 @@ class ProseMirrorView {
 }
 
 const Editor: FC = () => {
-  const [editorType, setEditorType] = useState("wysiwyg");
+  const [editorType, setEditorType] = useState<EditorType>("wysiwyg");
   const editorRef = useRef<MarkdownView | ProseMirrorView | undefined>(
     undefined,
   );
 
   useEffect(() => {
     if (!import.meta.env?.SSR) {
+      const savedEditorType = localStorage.getItem("editorType") || "wysiwyg";
+      setEditorType(savedEditorType as EditorType);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!import.meta.env?.SSR) {
       let view: MarkdownView | ProseMirrorView;
       let editorPlace = document.querySelector("#editor");
       if (editorPlace) {
-        let currentContent = "";
+        const savedContent = localStorage.getItem("content");
+        let currentContent = savedContent ? JSON.parse(savedContent) : "";
         if (editorRef.current) {
           currentContent = editorRef.current.content || "";
           editorRef.current.destroy();
@@ -101,6 +135,14 @@ const Editor: FC = () => {
     }
   }, [editorType]);
 
+  const handleEditorTypeChanged = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => {
+      setEditorType(e.target.value as EditorType);
+      localStorage.setItem("editorType", e.target.value);
+    },
+    [],
+  );
+
   return (
     <>
       <Title>Editor</Title>
@@ -113,7 +155,7 @@ const Editor: FC = () => {
               type="radio"
               value="wysiwyg"
               checked={editorType === "wysiwyg"}
-              onChange={(e) => setEditorType(e.target.value)}
+              onChange={handleEditorTypeChanged}
             />
           </label>
           <label>
@@ -123,12 +165,29 @@ const Editor: FC = () => {
               type="radio"
               value="markdown"
               checked={editorType === "markdown"}
-              onChange={(e) => setEditorType(e.target.value)}
+              onChange={handleEditorTypeChanged}
             />
           </label>
         </div>
         <div id="editor" />
         <div id="content" />
+        <div className="editor-actions">
+          <button
+            onClick={() => {
+              localStorage.setItem(
+                "content",
+                JSON.stringify(editorRef.current?.content),
+              );
+            }}
+          >
+            Save
+          </button>
+          <button
+            onClick={() => localStorage.setItem("content", JSON.stringify(""))}
+          >
+            Clear
+          </button>
+        </div>
       </Content>
     </>
   );

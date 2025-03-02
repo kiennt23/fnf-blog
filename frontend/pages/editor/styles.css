@@ -26,6 +26,11 @@
     margin-bottom: 24px;
 }
 
+.editor-actions {
+    display: flex;
+    gap: 25px;
+}
+
 .ProseMirror {
     position: relative;
     min-height: calc(var(--editor-min-height) - 26px);
