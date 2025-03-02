@@ -105,24 +105,30 @@ const Editor: FC = () => {
     <>
       <Title>Editor</Title>
       <Content>
+        <div className="editor-types">
+          <label>
+            WYSIWYG
+            <input
+              id="wysiwyg"
+              type="radio"
+              value="wysiwyg"
+              checked={editorType === "wysiwyg"}
+              onChange={(e) => setEditorType(e.target.value)}
+            />
+          </label>
+          <label>
+            Markdown (View only)
+            <input
+              id="markdown"
+              type="radio"
+              value="markdown"
+              checked={editorType === "markdown"}
+              onChange={(e) => setEditorType(e.target.value)}
+            />
+          </label>
+        </div>
         <div id="editor" />
         <div id="content" />
-        <label htmlFor="wysiwyg">WYSIWYG</label>
-        <input
-          id="wysiwyg"
-          type="radio"
-          value="wysiwyg"
-          checked={editorType === "wysiwyg"}
-          onChange={(e) => setEditorType(e.target.value)}
-        />
-        <label htmlFor="markdown">Markdown</label>
-        <input
-          id="markdown"
-          type="radio"
-          value="markdown"
-          checked={editorType === "markdown"}
-          onChange={(e) => setEditorType(e.target.value)}
-        />
       </Content>
     </>
   );

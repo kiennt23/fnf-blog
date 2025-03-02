@@ -1,15 +1,14 @@
-import "newrelic";
+// import "newrelic";
+import "./bootstrap";
 import path from "path";
 import { fileURLToPath } from "url";
 import express from "express";
 
 import { auth } from "express-openid-connect";
 
-import dotenv from "dotenv";
 import { ViteDevServer } from "vite";
-import fs from "fs";
 
-dotenv.config();
+import fs from "fs";
 
 const base = process.env.BASE || "/";
 

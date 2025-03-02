@@ -20,6 +20,12 @@
     cursor: not-allowed;
 }
 
+.editor-types {
+    display: flex;
+    gap: 50px;
+    margin-bottom: 24px;
+}
+
 .ProseMirror {
     position: relative;
     min-height: calc(var(--editor-min-height) - 26px);
