@@ -20,24 +20,26 @@ import "prosemirror-example-setup/style/style.css";
 import "./styles.css";
 
 class MarkdownView {
-  private textarea: HTMLTextAreaElement;
+  private div: HTMLDivElement;
   constructor(
-    target: { appendChild: (arg0: HTMLTextAreaElement) => HTMLTextAreaElement },
+    target: { appendChild: (arg0: HTMLDivElement) => HTMLDivElement },
     content: string,
   ) {
-    this.textarea = target.appendChild(document.createElement("textarea"));
-    this.textarea.classList.add("markdown-textarea");
-    this.textarea.value = content;
+    this.div = target.appendChild(document.createElement("div"));
+    // this.div.contentEditable = "true";
+    // this.div.ariaDisabled = "true";
+    this.div.classList.add("markdown-textarea");
+    this.div.textContent = content;
   }
 
   get content() {
-    return this.textarea.value;
+    return this.div.textContent;
   }
   focus() {
-    this.textarea.focus();
+    this.div.focus();
   }
   destroy() {
-    this.textarea.remove();
+    this.div.remove();
   }
 }
 
@@ -78,20 +80,18 @@ const Editor: FC = () => {
 
   useEffect(() => {
     if (!import.meta.env?.SSR) {
-      if (editorRef.current) {
-        editorRef.current.destroy();
-      }
       let view: MarkdownView | ProseMirrorView;
       let editorPlace = document.querySelector("#editor");
-      let contentPlace = document.querySelector("#content");
-      if (editorPlace && contentPlace) {
+      if (editorPlace) {
+        let currentContent = "";
+        if (editorRef.current) {
+          currentContent = editorRef.current.content || "";
+          editorRef.current.destroy();
+        }
         if (editorType === "wysiwyg") {
-          view = new ProseMirrorView(
-            editorPlace,
-            contentPlace?.textContent || "",
-          );
+          view = new ProseMirrorView(editorPlace, currentContent);
         } else {
-          view = new MarkdownView(editorPlace, contentPlace?.textContent || "");
+          view = new MarkdownView(editorPlace, currentContent);
         }
 
         editorRef.current = view;

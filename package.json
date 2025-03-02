@@ -7,7 +7,7 @@
     "clean": "rimraf dist dist-server",
     "build:fe": "vite build --config vite.fe.config.ts",
     "build:be": "vite build --config vite.be.config.ts",
-    "build": "NODE_ENV=production npm run build:fe && npm run build:be",
+    "build": "NODE_ENV=production pnpm build:fe && pnpm build:be",
     "start": "NODE_ENV=production node --experimental-loader=newrelic/esm-loader.mjs dist-server/index.js",
     "dev": "NODE_ENV=development bun backend/index.ts",
     "lint": "eslint .",

@@ -1,5 +1,10 @@
+:root {
+    --editor-min-height: 200px;
+}
+
 .markdown-textarea {
     width: 100%;
+    min-height: var(--editor-min-height);
     height: auto;
     resize: none;
     box-sizing: border-box;
@@ -9,10 +14,15 @@
     outline: none;
     font-family: inherit;
     font-size: inherit;
+    word-wrap: break-word;
+    white-space: break-spaces;
+    line-height: 1.2;
+    cursor: not-allowed;
 }
 
 .ProseMirror {
     position: relative;
+    min-height: calc(var(--editor-min-height) - 26px);
 }
 
 .ProseMirror {
