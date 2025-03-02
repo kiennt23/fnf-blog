@@ -200,6 +200,22 @@ const Editor: FC = () => {
             >
               Clear Draft
             </button>
+            <button
+              onClick={async () => {
+                const currentContent = editorRef.current?.content;
+                const res = await fetch("api/editor/save", {
+                  method: "POST",
+                  body: JSON.stringify({ content: currentContent }),
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                });
+                const data = await res.json();
+                console.log(data);
+              }}
+            >
+              Save!
+            </button>
           </div>
         </div>
         <div id="editor" />
