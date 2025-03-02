@@ -30,7 +30,7 @@ import "./styles.css";
 type EditorType = "wysiwyg" | "markdown";
 
 class MarkdownView {
-  private div: HTMLDivElement;
+  private readonly div: HTMLDivElement;
   constructor(
     target: { appendChild: (arg0: HTMLDivElement) => HTMLDivElement },
     content: string,
