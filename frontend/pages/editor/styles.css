@@ -20,15 +20,20 @@
     cursor: not-allowed;
 }
 
-.editor-types {
+.editor-actions {
     display: flex;
-    gap: 50px;
+    justify-content: space-between;
     margin-bottom: 24px;
 }
 
-.editor-actions {
+.editor-left-actions {
     display: flex;
-    gap: 25px;
+    gap: 24px;
+}
+
+.editor-right-actions {
+    display: flex;
+    gap: 24px;
 }
 
 .ProseMirror {

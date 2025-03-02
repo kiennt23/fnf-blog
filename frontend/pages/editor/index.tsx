@@ -57,6 +57,10 @@ class MarkdownView {
   destroy() {
     this.div.remove();
   }
+
+  clear() {
+    this.content = "";
+  }
 }
 
 class ProseMirrorView {
@@ -74,11 +78,6 @@ class ProseMirrorView {
         doc: defaultMarkdownParser.parse(content),
         plugins: exampleSetup({ schema }),
       }),
-      handleDOMEvents: {
-        change: (view, event) => {
-          console.log("change", view, event);
-        },
-      },
     });
   }
 
@@ -93,8 +92,18 @@ class ProseMirrorView {
   focus() {
     this.view.focus();
   }
+
   destroy() {
     this.view.destroy();
+  }
+
+  clear() {
+    this.view.updateState(
+      EditorState.create({
+        doc: defaultMarkdownParser.parse(""),
+        plugins: [...this.view.state.plugins],
+      }),
+    );
   }
 }
 
@@ -113,15 +122,17 @@ const Editor: FC = () => {
 
   useEffect(() => {
     if (!import.meta.env?.SSR) {
-      let view: MarkdownView | ProseMirrorView;
+      const savedContent = localStorage.getItem("content");
+      let currentContent = savedContent ? JSON.parse(savedContent) : "";
       let editorPlace = document.querySelector("#editor");
       if (editorPlace) {
-        const savedContent = localStorage.getItem("content");
-        let currentContent = savedContent ? JSON.parse(savedContent) : "";
         if (editorRef.current) {
           currentContent = editorRef.current.content || "";
           editorRef.current.destroy();
+          editorRef.current = undefined;
         }
+
+        let view: MarkdownView | ProseMirrorView;
         if (editorType === "wysiwyg") {
           view = new ProseMirrorView(editorPlace, currentContent);
         } else {
@@ -147,47 +158,51 @@ const Editor: FC = () => {
     <>
       <Title>Editor</Title>
       <Content>
-        <div className="editor-types">
-          <label>
-            WYSIWYG
-            <input
-              id="wysiwyg"
-              type="radio"
-              value="wysiwyg"
-              checked={editorType === "wysiwyg"}
-              onChange={handleEditorTypeChanged}
-            />
-          </label>
-          <label>
-            Markdown (View only)
-            <input
-              id="markdown"
-              type="radio"
-              value="markdown"
-              checked={editorType === "markdown"}
-              onChange={handleEditorTypeChanged}
-            />
-          </label>
+        <div className="editor-actions">
+          <div className="editor-left-actions">
+            <label>
+              WYSIWYG
+              <input
+                id="wysiwyg"
+                type="radio"
+                value="wysiwyg"
+                checked={editorType === "wysiwyg"}
+                onChange={handleEditorTypeChanged}
+              />
+            </label>
+            <label>
+              Markdown (View only)
+              <input
+                id="markdown"
+                type="radio"
+                value="markdown"
+                checked={editorType === "markdown"}
+                onChange={handleEditorTypeChanged}
+              />
+            </label>
+          </div>
+          <div className="editor-right-actions">
+            <button
+              onClick={() => {
+                localStorage.setItem(
+                  "content",
+                  JSON.stringify(editorRef.current?.content),
+                );
+              }}
+            >
+              Save Draft
+            </button>
+            <button
+              onClick={() => {
+                editorRef.current?.clear();
+                localStorage.setItem("content", JSON.stringify(""));
+              }}
+            >
+              Clear Draft
+            </button>
+          </div>
         </div>
         <div id="editor" />
-        <div id="content" />
-        <div className="editor-actions">
-          <button
-            onClick={() => {
-              localStorage.setItem(
-                "content",
-                JSON.stringify(editorRef.current?.content),
-              );
-            }}
-          >
-            Save
-          </button>
-          <button
-            onClick={() => localStorage.setItem("content", JSON.stringify(""))}
-          >
-            Clear
-          </button>
-        </div>
       </Content>
     </>
   );
