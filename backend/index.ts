@@ -10,6 +10,8 @@ import { ViteDevServer } from "vite";
 
 import fs from "fs";
 
+import apiRoutes from "./api/routes";
+
 const base = process.env.BASE || "/";
 
 const app = express();
@@ -21,13 +23,17 @@ const __dirname = path.dirname(__filename);
 
 const config = {
   authRequired: false, // If true, all routes require authentication by default
-  auth0Logout: false, // Let users log out via Auth0
+  auth0Logout: true, // Let users log out via Auth0
   secret: process.env.AUTH0_SECRET,
   baseURL: process.env.AUTH0_BASE_URL,
   clientID: process.env.AUTH0_CLIENT_ID,
   issuerBaseURL: process.env.AUTH0_ISSUER_BASE_URL,
   clientSecret: process.env.AUTH0_CLIENT_SECRET,
 };
+
+app.use(auth(config));
+
+app.use("/api", express.json(), apiRoutes);
 
 const manifestPath = path.resolve(__dirname, "../dist/manifest.json");
 let manifest: Record<string, Record<string, string | string[]>> = {};
@@ -93,8 +99,6 @@ if (!isProd) {
   app.use(compression());
   app.use(base, sirv("./dist", { extensions: [] }));
 }
-
-app.use(auth(config));
 
 app.get("*", async (req, res) => {
   const isAuthenticated = req.oidc.isAuthenticated();
