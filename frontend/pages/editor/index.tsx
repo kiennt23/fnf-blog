@@ -43,11 +43,13 @@ class MarkdownView {
   }
 
   get content(): string | null {
-    return this.div.textContent;
+    return this.div?.textContent;
   }
 
   set content(content: string) {
-    this.div.textContent = content;
+    if (this.div) {
+      this.div.textContent = content;
+    }
   }
 
   focus() {
@@ -82,11 +84,13 @@ class ProseMirrorView {
   }
 
   get content(): string {
-    return defaultMarkdownSerializer.serialize(this.view.state.doc);
+    return defaultMarkdownSerializer.serialize(this.view?.state.doc);
   }
 
   set content(content: string) {
-    this.view.state.doc = defaultMarkdownParser.parse(content);
+    if (this.view?.state) {
+      this.view.state.doc = defaultMarkdownParser.parse(content);
+    }
   }
 
   focus() {
@@ -123,7 +127,12 @@ const Editor: FC = () => {
   useEffect(() => {
     if (!import.meta.env?.SSR) {
       const savedContent = localStorage.getItem("content");
-      let currentContent = savedContent ? JSON.parse(savedContent) : "";
+      let currentContent = "";
+      try {
+        currentContent = savedContent ? JSON.parse(savedContent) : "";
+      } catch (error) {
+        console.error("Failed to parse saved content:", error);
+      }
       let editorPlace = document.querySelector("#editor");
       if (editorPlace) {
         if (editorRef.current) {
@@ -203,15 +212,24 @@ const Editor: FC = () => {
             <button
               onClick={async () => {
                 const currentContent = editorRef.current?.content;
-                const res = await fetch("api/editor/save", {
-                  method: "POST",
-                  body: JSON.stringify({ content: currentContent }),
-                  headers: {
-                    "Content-Type": "application/json",
-                  },
-                });
-                const data = await res.json();
-                console.log(data);
+                try {
+                  const res = await fetch("api/editor/save", {
+                    method: "POST",
+                    body: JSON.stringify({ content: currentContent }),
+                    headers: {
+                      "Content-Type": "application/json",
+                    },
+                  });
+                  if (!res.ok) {
+                    throw new Error(
+                      `API request failed with status ${res.status}`,
+                    );
+                  }
+                  const data = await res.json();
+                  console.log(data);
+                } catch (error) {
+                  console.error("Failed to save content:", error);
+                }
               }}
             >
               Save!
