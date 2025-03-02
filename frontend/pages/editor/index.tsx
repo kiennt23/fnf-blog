@@ -102,12 +102,14 @@ class ProseMirrorView {
   }
 
   clear() {
-    this.view.updateState(
-      EditorState.create({
-        doc: defaultMarkdownParser.parse(""),
-        plugins: [...this.view.state.plugins],
-      }),
-    );
+    if (this.view) {
+      this.view.updateState(
+        EditorState.create({
+          doc: defaultMarkdownParser.parse(""),
+          plugins: [...this.view.state.plugins],
+        }),
+      );
+    }
   }
 }
 
@@ -158,7 +160,11 @@ const Editor: FC = () => {
   const handleEditorTypeChanged = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
       setEditorType(e.target.value as EditorType);
-      localStorage.setItem("editorType", e.target.value);
+      try {
+        localStorage.setItem("editorType", e.target.value);
+      } catch (error) {
+        console.error("Failed to save editor type:", error);
+      }
     },
     [],
   );
@@ -193,18 +199,26 @@ const Editor: FC = () => {
           <div className="editor-right-actions">
             <button
               onClick={() => {
-                localStorage.setItem(
-                  "content",
-                  JSON.stringify(editorRef.current?.content),
-                );
+                try {
+                  localStorage.setItem(
+                    "content",
+                    JSON.stringify(editorRef.current?.content),
+                  );
+                } catch (error) {
+                  console.error("Failed to save content:", error);
+                }
               }}
             >
               Save Draft
             </button>
             <button
               onClick={() => {
-                editorRef.current?.clear();
-                localStorage.setItem("content", JSON.stringify(""));
+                try {
+                  editorRef.current?.clear();
+                  localStorage.setItem("content", JSON.stringify(""));
+                } catch (error) {
+                  console.error("Failed to clear content:", error);
+                }
               }}
             >
               Clear Draft
