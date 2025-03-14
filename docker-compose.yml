@@ -1,0 +1,52 @@
+services:
+  webapp:
+    image: fnf/webapp
+    build:
+      context: .
+      dockerfile: ./dev.Dockerfile
+    develop:
+      watch:
+        - action: sync
+          path: ./frontend
+          target: /app/frontend
+          ignore:
+            - node_modules/
+        - action: sync
+          path: ./backend
+          target: /app/backend
+          ignore:
+            - node_modules/
+        - action: rebuild
+          path: package.json
+
+    env_file: ".env"
+    networks:
+      - fnf
+    ports:
+      - "3000:3000"
+      - "10000:10000"
+
+  postgres:
+    container_name: postgres_container
+    image: postgres
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-changeme}
+      PGDATA: /data/postgres
+    volumes:
+       - postgres:/data/postgres
+    ports:
+      - "5432:5432"
+    networks:
+      - fnf
+    restart: unless-stopped
+  
+networks:
+  fnf:
+    driver: bridge
+
+volumes:
+  webapp:
+  postgres:
+  pgadmin:
+
