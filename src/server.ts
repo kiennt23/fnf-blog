@@ -50,7 +50,7 @@ const getStyles = () => {
                 return "";
         }
 
-        let cssAssets = Object.keys(manifest)
+        const cssAssets = Object.keys(manifest)
                 .filter((name) => name !== "web-worker/service-worker.ts")
                 .map((name) => {
                         const cssAssets: string[] = manifest[name].css as string[];
