@@ -6,7 +6,7 @@ const router = Router();
 router.post("/save", async (req, res) => {
   const thePost = req.body;
   const savedPost = await prismaClient.post.upsert({
-    ...thePost
+    ...thePost,
   });
 
   res.send(savedPost);

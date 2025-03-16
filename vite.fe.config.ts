@@ -87,24 +87,24 @@ export default defineConfig(() => {
       cssMinify: "lightningcss",
       rollupOptions: isProduction
         ? {
-          // In production we have two entry points: one for the client and one for the service worker
-          input: {
-            client: path.resolve(__dirname, "src/client.tsx"),
-            "service-worker": path.resolve(
-              __dirname,
-              "web-worker/service-worker.ts",
-            ),
-          },
-          output: {
-            // For the service worker we output a plain filename, for others we use a hash
-            entryFileNames: (chunk) => {
-              if (chunk.name === "service-worker") {
-                return "[name].js";
-              }
-              return "[name].[hash].js";
+            // In production we have two entry points: one for the client and one for the service worker
+            input: {
+              client: path.resolve(__dirname, "src/client.tsx"),
+              "service-worker": path.resolve(
+                __dirname,
+                "web-worker/service-worker.ts",
+              ),
             },
-          },
-        }
+            output: {
+              // For the service worker we output a plain filename, for others we use a hash
+              entryFileNames: (chunk) => {
+                if (chunk.name === "service-worker") {
+                  return "[name].js";
+                }
+                return "[name].[hash].js";
+              },
+            },
+          }
         : undefined,
     },
     resolve: {

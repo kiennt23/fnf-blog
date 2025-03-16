@@ -22,13 +22,13 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const config = {
-        authRequired: false, // If true, all routes require authentication by default
-        auth0Logout: true, // Let users log out via Auth0
-        secret: process.env.AUTH0_SECRET,
-        baseURL: process.env.AUTH0_BASE_URL,
-        clientID: process.env.AUTH0_CLIENT_ID,
-        issuerBaseURL: process.env.AUTH0_ISSUER_BASE_URL,
-        clientSecret: process.env.AUTH0_CLIENT_SECRET,
+  authRequired: false, // If true, all routes require authentication by default
+  auth0Logout: true, // Let users log out via Auth0
+  secret: process.env.AUTH0_SECRET,
+  baseURL: process.env.AUTH0_BASE_URL,
+  clientID: process.env.AUTH0_CLIENT_ID,
+  issuerBaseURL: process.env.AUTH0_ISSUER_BASE_URL,
+  clientSecret: process.env.AUTH0_CLIENT_SECRET,
 };
 
 app.use(auth(config));
@@ -39,101 +39,101 @@ const manifestPath = path.resolve(__dirname, "../dist/manifest.json");
 let manifest: Record<string, Record<string, string | string[]>> = {};
 
 if (fs.existsSync(manifestPath)) {
-        manifest = JSON.parse(fs.readFileSync(manifestPath, "utf8"));
+  manifest = JSON.parse(fs.readFileSync(manifestPath, "utf8"));
 }
 
 const getStyles = () => {
-        if (!isProd || !fs.existsSync(manifestPath)) {
-                console.warn(
-                        `You are running in development mode. No CSS bundling required`,
-                );
-                return "";
-        }
+  if (!isProd || !fs.existsSync(manifestPath)) {
+    console.warn(
+      `You are running in development mode. No CSS bundling required`,
+    );
+    return "";
+  }
 
-        const cssAssets = Object.keys(manifest)
-                .filter((name) => name !== "web-worker/service-worker.ts")
-                .map((name) => {
-                        const cssAssets: string[] = manifest[name].css as string[];
-                        return cssAssets
-                                ?.map((asset) => `<link rel="stylesheet" href="${asset}">`)
-                                .reduce((result, name) => `${result}\n${name}\n`);
-                })
-                .reduce((result, linkTag) => `${result ? result : ""}\n${linkTag}\n`);
-        return cssAssets || "";
+  const cssAssets = Object.keys(manifest)
+    .filter((name) => name !== "web-worker/service-worker.ts")
+    .map((name) => {
+      const cssAssets: string[] = manifest[name].css as string[];
+      return cssAssets
+        ?.map((asset) => `<link rel="stylesheet" href="${asset}">`)
+        .reduce((result, name) => `${result}\n${name}\n`);
+    })
+    .reduce((result, linkTag) => `${result ? result : ""}\n${linkTag}\n`);
+  return cssAssets || "";
 };
 
 const getScripts = () => {
-        if (!isProd || !fs.existsSync(manifestPath)) {
-                console.warn(`You are running in development mode`);
-                // In development, load the client entry (adjust the path if needed)
-                return `
+  if (!isProd || !fs.existsSync(manifestPath)) {
+    console.warn(`You are running in development mode`);
+    // In development, load the client entry (adjust the path if needed)
+    return `
         <script type="module" src="/@vite/client"></script>
         <script type="module" src="/src/client.tsx"></script>
     `;
-        }
+  }
 
-        // In production, use the built manifest to load scripts.
-        return Object.keys(manifest)
-                .filter((name) => name !== "web-worker/service-worker.ts")
-                .map((name) => {
-                        return `<script type="module" src="${manifest[name].file}"></script>`;
-                })
-                .join("\n");
+  // In production, use the built manifest to load scripts.
+  return Object.keys(manifest)
+    .filter((name) => name !== "web-worker/service-worker.ts")
+    .map((name) => {
+      return `<script type="module" src="${manifest[name].file}"></script>`;
+    })
+    .join("\n");
 };
 
 let vite: ViteDevServer;
 if (!isProd) {
-        // In development, create a Vite dev server in middleware mode
-        const { createServer: createViteServer } = await import("vite");
-        vite = await createViteServer({
-                server: {
-                        middlewareMode: true,
-                        hmr: {
-                                port: process.env.HMR_PORT ? Number(process.env.HMR_PORT) : 10000,
-                                clientPort: process.env.HMR_PORT ? Number(process.env.HMR_PORT) : 10000,
-                        },
-                },
-                appType: "custom",
-                base,
-        });
+  // In development, create a Vite dev server in middleware mode
+  const { createServer: createViteServer } = await import("vite");
+  vite = await createViteServer({
+    server: {
+      middlewareMode: true,
+      hmr: {
+        port: process.env.HMR_PORT ? Number(process.env.HMR_PORT) : 10000,
+        clientPort: process.env.HMR_PORT ? Number(process.env.HMR_PORT) : 10000,
+      },
+    },
+    appType: "custom",
+    base,
+  });
 
-        app.use(vite.middlewares);
+  app.use(vite.middlewares);
 } else {
-        // In production, serve the built public files from /public
-        const compression = (await import("compression")).default;
-        const sirv = (await import("sirv")).default;
-        app.use(compression());
-        app.use(base, sirv("./dist", { extensions: [] }));
+  // In production, serve the built public files from /public
+  const compression = (await import("compression")).default;
+  const sirv = (await import("sirv")).default;
+  app.use(compression());
+  app.use(base, sirv("./dist", { extensions: [] }));
 }
 
 app.get("*", async (req, res) => {
-        const isAuthenticated = req.oidc.isAuthenticated();
-        const user = req.oidc.user;
+  const isAuthenticated = req.oidc.isAuthenticated();
+  const user = req.oidc.user;
 
-        const url = req.originalUrl;
-        try {
-                let template = fs.readFileSync(
-                        path.resolve(__dirname, "../index.html"),
-                        "utf-8",
-                );
+  const url = req.originalUrl;
+  try {
+    let template = fs.readFileSync(
+      path.resolve(__dirname, "../index.html"),
+      "utf-8",
+    );
 
-                if (!isProd) {
-                        template = await vite.transformIndexHtml(url, template);
-                }
+    if (!isProd) {
+      template = await vite.transformIndexHtml(url, template);
+    }
 
-                const { render } = isProd
-                        ? await import("./serverEntry.tsx")
-                        : await vite.ssrLoadModule("/src/serverEntry.tsx");
+    const { render } = isProd
+      ? await import("./serverEntry.tsx")
+      : await vite.ssrLoadModule("/src/serverEntry.tsx");
 
-                const appHtml = await render(url, {
-                        isAuthenticated,
-                        user,
-                });
+    const appHtml = await render(url, {
+      isAuthenticated,
+      user,
+    });
 
-                if (isProd) {
-                        template = template.replace(
-                                "<!-- third-party-scripts-outlet -->",
-                                () => `
+    if (isProd) {
+      template = template.replace(
+        "<!-- third-party-scripts-outlet -->",
+        () => `
           <script type="text/javascript">
           ;window.NREUM||(NREUM={});NREUM.init={session_replay:{enabled:true,block_selector:'',mask_text_selector:'',sampling_rate:10.0,error_sampling_rate:100.0,mask_all_inputs:false,collect_fonts:true,inline_images:false,inline_stylesheet:true,fix_stylesheets:true,mask_input_options:{color:true,date:true,datetime_local:true,email:true,month:true,number:true,range:true,search:true,tel:true,text:true,time:true,url:true,week:true,select:true,textarea:true,}},distributed_tracing:{enabled:true},privacy:{cookies_enabled:true},ajax:{deny_list:["bam.nr-data.net"]}};
           
@@ -150,32 +150,32 @@ app.get("*", async (req, res) => {
             })(window, document, "clarity", "script", "qe5h7ipivq");
           </script>
         `,
-                        );
-                }
+      );
+    }
 
-                template = template.replace("<!-- stylesheets-outlet -->", () =>
-                        getStyles(),
-                );
-                template = template.replace("<!-- app-outlet -->", () => appHtml);
-                template = template.replace(
-                        "<!-- init-data-outlet -->",
-                        () => `
+    template = template.replace("<!-- stylesheets-outlet -->", () =>
+      getStyles(),
+    );
+    template = template.replace("<!-- app-outlet -->", () => appHtml);
+    template = template.replace(
+      "<!-- init-data-outlet -->",
+      () => `
         <script>window.__INITIAL_DATA__ = ${JSON.stringify({ isAuthenticated, user })}</script>
         <script>window.__MANIFEST_DATA__ = ${JSON.stringify(manifest)}</script>
       `,
-                );
-                template = template.replace("<!-- scripts-outlet -->", () => getScripts());
-                res.status(200).set({ "Content-Type": "text/html" }).end(template);
-        } catch (e: unknown) {
-                const err = e as Error;
-                vite?.ssrFixStacktrace(err);
-                console.log(err.stack);
-                res.status(500).end(err.stack);
-        }
+    );
+    template = template.replace("<!-- scripts-outlet -->", () => getScripts());
+    res.status(200).set({ "Content-Type": "text/html" }).end(template);
+  } catch (e: unknown) {
+    const err = e as Error;
+    vite?.ssrFixStacktrace(err);
+    console.log(err.stack);
+    res.status(500).end(err.stack);
+  }
 });
 
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
-        console.log(`Server listening on port ${PORT}`);
+  console.log(`Server listening on port ${PORT}`);
 });

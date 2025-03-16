@@ -231,7 +231,8 @@ const Editor: FC = () => {
               onClick={async () => {
                 const content = editorRef.current?.content;
                 const savedPost = await savePost({
-                  title: 'Test Title', content: content || ''
+                  title: "Test Title",
+                  content: content || "",
                 });
 
                 console.log(savedPost);

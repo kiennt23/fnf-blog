@@ -20,11 +20,28 @@ const App: FC<AppProps> = ({ isAuthenticated, user }) => {
         />
         <Body className={styles.bodyContainer}>
           <Routes>
-            <Route index element={<Home />} />
-            <Route path="/frames" element={<Frames />} />
-            <Route path="/functions" element={<Functions />} />
-            <Route path="/about" element={<About />} />
-            {isAuthenticated && <Route path="/editor" element={<Editor />} />}
+            <Route
+              index
+              element={<Home />}
+            />
+            <Route
+              path="/frames"
+              element={<Frames />}
+            />
+            <Route
+              path="/functions"
+              element={<Functions />}
+            />
+            <Route
+              path="/about"
+              element={<About />}
+            />
+            {isAuthenticated && (
+              <Route
+                path="/editor"
+                element={<Editor />}
+              />
+            )}
           </Routes>
         </Body>
       </div>
