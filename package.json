@@ -11,7 +11,8 @@
     "start": "NODE_ENV=production node --experimental-loader=newrelic/esm-loader.mjs dist-server/server.js",
     "dev": "NODE_ENV=development bun --watch --hot src/server.ts",
     "lint": "eslint .",
-    "lint:fix": "eslint . --fix"
+    "lint:fix": "eslint . --fix",
+    "prepare": "husky"
   },
   "keywords": [],
   "author": "",
@@ -69,7 +70,9 @@
     "eslint-plugin-react-compiler": "^19.0.0-beta-30d8a17-20250209",
     "eslint-plugin-react-hooks": "^5.1.0",
     "globals": "^16.0.0",
+    "husky": "^9.1.7",
     "lightningcss": "^1.29.1",
+    "lint-staged": "^15.5.0",
     "mini-css-extract-plugin": "^2.9.2",
     "prettier": "^3.4.2",
     "prisma": "^6.4.1",
