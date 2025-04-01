@@ -18,6 +18,7 @@
     white-space: break-spaces;
     line-height: 1.2;
     cursor: not-allowed;
+    field-sizing: content;
 }
 
 .editor-actions {

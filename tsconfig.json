@@ -14,8 +14,7 @@
     "jsx": "react"
   },
   "include": [
-    "backend/**/*",
-    "frontend/**/*",
+    "src/**/*",
     "types/global.d.ts",
     "vite.*"
   ],

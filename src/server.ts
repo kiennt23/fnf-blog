@@ -50,7 +50,7 @@ const getStyles = () => {
     return "";
   }
 
-  let cssAssets = Object.keys(manifest)
+  const cssAssets = Object.keys(manifest)
     .filter((name) => name !== "web-worker/service-worker.ts")
     .map((name) => {
       const cssAssets: string[] = manifest[name].css as string[];
@@ -68,7 +68,7 @@ const getScripts = () => {
     // In development, load the client entry (adjust the path if needed)
     return `
         <script type="module" src="/@vite/client"></script>
-        <script type="module" src="/frontend/client.tsx"></script>
+        <script type="module" src="/src/client.tsx"></script>
     `;
   }
 
@@ -86,7 +86,13 @@ if (!isProd) {
   // In development, create a Vite dev server in middleware mode
   const { createServer: createViteServer } = await import("vite");
   vite = await createViteServer({
-    server: { middlewareMode: true },
+    server: {
+      middlewareMode: true,
+      hmr: {
+        port: process.env.HMR_PORT ? Number(process.env.HMR_PORT) : 10000,
+        clientPort: process.env.HMR_PORT ? Number(process.env.HMR_PORT) : 10000,
+      },
+    },
     appType: "custom",
     base,
   });
@@ -116,8 +122,8 @@ app.get("*", async (req, res) => {
     }
 
     const { render } = isProd
-      ? await import("./entry.tsx")
-      : await vite.ssrLoadModule("/backend/entry.tsx");
+      ? await import("./serverEntry.tsx")
+      : await vite.ssrLoadModule("/src/serverEntry.tsx");
 
     const appHtml = await render(url, {
       isAuthenticated,

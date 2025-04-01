@@ -8,7 +8,10 @@ const Sidebar: FC<{
   className?: string;
 }> = ({ isAuthenticated, user, ...props }) => {
   return (
-    <Root orientation="vertical" {...props}>
+    <Root
+      orientation="vertical"
+      {...props}
+    >
       <List>
         <Item>
           <Link to="/">Home</Link>

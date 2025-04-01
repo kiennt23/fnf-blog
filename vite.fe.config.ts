@@ -23,13 +23,17 @@ function getVersionFromGit() {
     try {
       // Get the latest tag (annotated or lightweight)
       latestTag = execSync("git describe --tags --abbrev=0").toString().trim();
-    } catch {}
+    } catch (error: unknown) {
+      console.warn("Couldn't get the latest tag", error);
+    }
     try {
       // If HEAD exactly matches a tag
       headTag = execSync("git describe --tags --exact-match HEAD")
         .toString()
         .trim();
-    } catch {}
+    } catch (error: unknown) {
+      console.warn("HEAD doesn't match any tags", error);
+    }
     if (headTag) {
       // Use the tag (without a leading "v")
       return headTag.replace(/^v/, "");
@@ -85,7 +89,7 @@ export default defineConfig(() => {
         ? {
             // In production we have two entry points: one for the client and one for the service worker
             input: {
-              client: path.resolve(__dirname, "frontend/client.tsx"),
+              client: path.resolve(__dirname, "src/client.tsx"),
               "service-worker": path.resolve(
                 __dirname,
                 "web-worker/service-worker.ts",

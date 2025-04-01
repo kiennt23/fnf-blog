@@ -15,7 +15,10 @@ if (rootElement) {
     rootElement,
     <StrictMode>
       <BrowserRouter>
-        <App isAuthenticated={isAuthenticated} user={user} />
+        <App
+          isAuthenticated={isAuthenticated}
+          user={user}
+        />
       </BrowserRouter>
     </StrictMode>,
   );

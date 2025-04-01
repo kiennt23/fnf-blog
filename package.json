@@ -8,16 +8,19 @@
     "build:fe": "vite build --config vite.fe.config.ts",
     "build:be": "vite build --config vite.be.config.ts",
     "build": "NODE_ENV=production pnpm build:fe && pnpm build:be",
-    "start": "NODE_ENV=production node --experimental-loader=newrelic/esm-loader.mjs dist-server/index.js",
-    "dev": "NODE_ENV=development bun backend/index.ts",
+    "start": "NODE_ENV=production node --experimental-loader=newrelic/esm-loader.mjs dist-server/server.js",
+    "dev": "NODE_ENV=development bun --watch --hot src/server.ts",
     "lint": "eslint .",
-    "lint:fix": "eslint . --fix"
+    "lint:fix": "eslint . --fix",
+    "prepare": "husky"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@prisma/client": "6.5.0",
+    "@prisma/extension-accelerate": "^1.2.2",
     "@radix-ui/react-navigation-menu": "^1.2.4",
     "compression": "^1.8.0",
     "dotenv": "^16.4.7",
@@ -42,6 +45,7 @@
     "@babel/preset-env": "^7.26.7",
     "@babel/preset-react": "^7.26.3",
     "@babel/preset-typescript": "^7.26.0",
+    "@eslint/js": "^9.22.0",
     "@flydotio/dockerfile": "^0.7.4",
     "@types/compression": "^1.7.5",
     "@types/express": "^5.0.0",
@@ -59,25 +63,50 @@
     "cross-env": "^7.0.3",
     "css-loader": "^7.1.2",
     "dynohot": "^1.2.1",
-    "eslint": "^9.19.0",
+    "eslint": "^9.21.0",
     "eslint-plugin-jsx-a11y": "^6.10.2",
     "eslint-plugin-prettier": "^5.2.3",
     "eslint-plugin-react": "^7.37.4",
     "eslint-plugin-react-compiler": "^19.0.0-beta-30d8a17-20250209",
     "eslint-plugin-react-hooks": "^5.1.0",
+    "globals": "^16.0.0",
+    "husky": "^9.1.7",
     "lightningcss": "^1.29.1",
+    "lint-staged": "^15.5.0",
     "mini-css-extract-plugin": "^2.9.2",
     "prettier": "^3.4.2",
+    "prisma": "^6.4.1",
     "rimraf": "^6.0.1",
     "semver": "^7.6.3",
     "style-loader": "^4.0.0",
     "typescript": "^5.7.3",
+    "typescript-eslint": "^8.26.1",
     "vite": "^6.1.0"
   },
-  "packageManager": "pnpm@10.5.2+sha512.da9dc28cd3ff40d0592188235ab25d3202add8a207afbedc682220e4a0029ffbff4562102b9e6e46b4e3f9e8bd53e6d05de48544b0c57d4b0179e22c76d1199b",
+  "packageManager": "pnpm@10.6.3+sha512.bb45e34d50a9a76e858a95837301bfb6bd6d35aea2c5d52094fa497a467c43f5c440103ce2511e9e0a2f89c3d6071baac3358fc68ac6fb75e2ceb3d2736065e6",
   "pnpm": {
     "overrides": {
       "esbuild@<=0.24.2": ">=0.25.0"
-    }
+    },
+    "ignoredBuiltDependencies": [
+      "@contrast/fn-inspect",
+      "@newrelic/native-metrics",
+      "@prisma/client",
+      "@prisma/engines",
+      "core-js",
+      "esbuild",
+      "prisma",
+      "protobufjs"
+    ],
+    "onlyBuiltDependencies": [
+      "@contrast/fn-inspect",
+      "@newrelic/native-metrics",
+      "@prisma/client",
+      "@prisma/engines",
+      "core-js",
+      "esbuild",
+      "prisma",
+      "protobufjs"
+    ]
   }
 }

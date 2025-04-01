@@ -1,3 +1,5 @@
+"use client";
+
 import React, {
   ChangeEvent,
   FC,
@@ -24,6 +26,8 @@ import { Content, Title } from "../../ui/components";
 
 import "prosemirror-view/style/prosemirror.css";
 import "prosemirror-example-setup/style/style.css";
+
+import { savePost } from "./actions/post";
 
 import "./styles.css";
 
@@ -135,7 +139,7 @@ const Editor: FC = () => {
       } catch (error) {
         console.error("Failed to parse saved content:", error);
       }
-      let editorPlace = document.querySelector("#editor");
+      const editorPlace = document.querySelector("#editor");
       if (editorPlace) {
         if (editorRef.current) {
           currentContent = editorRef.current.content || "";
@@ -225,25 +229,13 @@ const Editor: FC = () => {
             </button>
             <button
               onClick={async () => {
-                const currentContent = editorRef.current?.content;
-                try {
-                  const res = await fetch("api/editor/save", {
-                    method: "POST",
-                    body: JSON.stringify({ content: currentContent }),
-                    headers: {
-                      "Content-Type": "application/json",
-                    },
-                  });
-                  if (!res.ok) {
-                    throw new Error(
-                      `API request failed with status ${res.status}`,
-                    );
-                  }
-                  const data = await res.json();
-                  console.log(data);
-                } catch (error) {
-                  console.error("Failed to save content:", error);
-                }
+                const content = editorRef.current?.content;
+                const savedPost = await savePost({
+                  title: "Test Title",
+                  content: content || "",
+                });
+
+                console.log(savedPost);
               }}
             >
               Save!

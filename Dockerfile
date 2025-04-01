@@ -28,6 +28,8 @@ RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
 # Copy application code
 COPY . .
 
+RUN pnpx prisma generate
+
 # Build application
 RUN pnpm build
 
